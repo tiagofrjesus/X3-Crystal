@@ -126,22 +126,29 @@ public class X3Rpt {
 
       // PARÂMETROS + RECORD SELECTION (parâmetros de Command no RAS são problemáticos; usar record selection)
       // requer no SQL: coluna DataReal = data real (p/ filtrar) além de DataMov (string p/ mostrar)
-      Action<string,CrFieldValueTypeEnum> addParam = (pname,ty)=>{
+      // default só pré-preenche o ecrã do X3; o motor EXIGE valor em runtime -> declarar os params em AREPORTD
+      Action<string,CrFieldValueTypeEnum,object> addParam = (pname,ty,defval)=>{
         try{ var pf=new ParameterFieldClass(); pf.Name=pname; pf.Type=ty;
              pf.ParameterType=CrParameterFieldTypeEnum.crParameterFieldTypeReportParameter; pf.AllowNullValue=true;
+             var dv1=new ParameterFieldDiscreteValueClass(); dv1.Value=defval; pf.DefaultValues.Add(dv1);
+             var dv2=new ParameterFieldDiscreteValueClass(); dv2.Value=defval; pf.CurrentValues.Add(dv2);
              RCD.DataDefController.ParameterFieldController.Add(pf); Lg("param "+pname);
         }catch(Exception e){ Lg("param "+pname+" ERR:"+e.Message); }
       };
-      addParam("artigo", CrFieldValueTypeEnum.crFieldValueTypeStringField);
-      addParam("datini", CrFieldValueTypeEnum.crFieldValueTypeDateField);
-      addParam("datfim", CrFieldValueTypeEnum.crFieldValueTypeDateField);
-      addParam("site",   CrFieldValueTypeEnum.crFieldValueTypeStringField);
+      // nomes EXATOS dos códigos do AREPORTD. "Limite" (datdeb/sitedeb) => o supervisor X3 gera o par fin.
+      // padrão X3 de RANGE (ver ZPENDENTES): pares deb/fin + sintaxe "{campo} in {?deb} to {?fin}".
+      // No AREPORTD declarar SÓ os "deb" como "Limite" (artigo Único, datedeb Limite, sitedeb Limite);
+      // o supervisor X3 gera e passa datefin/sitefin. NÃO declarar os "fin" à parte (senão aloca 2x -> ERR 504).
+      addParam("artigo",  CrFieldValueTypeEnum.crFieldValueTypeStringField, "M003147");
+      addParam("datedeb", CrFieldValueTypeEnum.crFieldValueTypeDateField,   new DateTime(2000,1,1));
+      addParam("datefin", CrFieldValueTypeEnum.crFieldValueTypeDateField,   new DateTime(2099,12,31));
+      addParam("sitedeb", CrFieldValueTypeEnum.crFieldValueTypeStringField, "");
+      addParam("sitefin", CrFieldValueTypeEnum.crFieldValueTypeStringField, "zzzzzz");
       try{
         eng.RecordSelectionFormula =
           "{X3MOV.Artigo} = {?artigo}"
-        + " and Date({X3MOV.DataReal}) >= {?datini}"
-        + " and Date({X3MOV.DataReal}) <= {?datfim}"
-        + " and ({?site} = \"\" or {X3MOV.Site} = {?site})";
+        + " and {X3MOV.DataReal} in {?datedeb} to {?datefin}"
+        + " and {X3MOV.Site} in {?sitedeb} to {?sitefin}";
         Lg("recsel");
       }catch(Exception e){ Lg("recsel ERR:"+e.Message); }
 

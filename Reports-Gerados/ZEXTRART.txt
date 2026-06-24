@@ -62,20 +62,31 @@ pois esse DSN só resolve no print server).
 ----------------------------------------------------------------
 5. PARÂMETROS  (a configurar no dicionário do relatório AREPORTD)
 ----------------------------------------------------------------
-IMPLEMENTADO (o artigo já NÃO está fixo no SQL). Filtro por FÓRMULA DE SELEÇÃO:
+IMPLEMENTADO (filtro por FÓRMULA DE SELEÇÃO). Nomes dos parâmetros = códigos do AREPORTD:
 
-  PARÂMETRO   TIPO     USO                                       X3 (mapear em AREPORTD)
-  ---------   ------   --------------------------------------    -----------------------
-  artigo      String   {X3MOV.Artigo} = {?artigo}                artigo (ITM)  [obrigatório]
-  datini      Date     Date({X3MOV.DataReal}) >= {?datini}       datdeb (D)
-  datfim      Date     Date({X3MOV.DataReal}) <= {?datfim}       datfin (D)
-  site        String   {?site}="" OR {X3MOV.Site}={?site}        sitedeb/site (FCY) — vazio = todos
+  Padrão de RANGE do X3 (igual ao ZPENDENTES.rpt). O .rpt tem 5 parâmetros:
 
-  Fórmula completa de seleção de registos:
+  PARÂMETRO   TIPO   AREPORTD              USO
+  ---------   -----  --------------------  --------------------------------------
+  artigo      Str    artigo (ITM, Único)   {X3MOV.Artigo} = {?artigo}
+  datedeb     Date   datedeb (D, LIMITE)   {X3MOV.DataReal} in {?datedeb} to {?datefin}
+  datefin     Date   (gerado pelo Limite)  "
+  sitedeb     Str    sitedeb (FCY, LIMITE) {X3MOV.Site} in {?sitedeb} to {?sitefin}
+  sitefin     Str    (gerado pelo Limite)  "
+
+  *** REGRA CRÍTICA do AREPORTD ***
+  Declarar SÓ os "deb": artigo (Único), datedeb (Limite), sitedeb (Limite).
+  NÃO declarar datefin nem sitefin à parte — o "Limite" faz o supervisor X3 gerar
+  e passar AUTOMATICAMENTE o par "fin". Se também forem declarados, o X3 aloca o
+  parâmetro DUAS vezes => "ParameterDoesNotAllowMultipleValue" (ERR 504 vazio).
+  (Foi exatamente este o erro: datdeb Limite + datfin declarado => datfin alocado 2x.)
+  O X3 passa datas como texto AAAAMMDD e converte para o parâmetro Date.
+  Com "Limite" em branco, o X3 passa o range completo (de=min, até=max) => traz tudo.
+
+  Fórmula de seleção de registos:
     {X3MOV.Artigo} = {?artigo}
-    and Date({X3MOV.DataReal}) >= {?datini}
-    and Date({X3MOV.DataReal}) <= {?datfim}
-    and ({?site} = "" or {X3MOV.Site} = {?site})
+    and {X3MOV.DataReal} in {?datedeb} to {?datefin}
+    and {X3MOV.Site} in {?sitedeb} to {?sitefin}
 
   Notas:
   - DataMov é texto (dd/MM/yyyy) só para mostrar; o filtro de datas usa a coluna
@@ -95,10 +106,17 @@ produção, migrar o filtro do artigo/datas para parâmetro de Command no SQL.
 ----------------------------------------------------------------
 6. REGISTO NO SAGE X3
 ----------------------------------------------------------------
-  AREPORT  : criar RPTCOD = ZEXTRART, ligar ao ficheiro ZEXTRART.rpt,
-             definir o processo de inicialização se necessário.
-  AREPORTD : declarar os parâmetros do ponto 5 (nome, tipo, label, default).
+  AREPORT  : criar RPTCOD = ZEXTRART, ligar ao ficheiro ZEXTRART.rpt.
+  AREPORTD : *** OBRIGATÓRIO *** declarar os 4 parâmetros com EXATAMENTE
+             estes nomes (o X3 passa-os ao Crystal por nome):
+                artigo  (alfa, ITM)   datini (data)   datfim (data)   site (alfa, FCY)
+             Sem isto, o motor de impressão dá "Valores de parâmetro ausentes"
+             (verificado: o Crystal exige valor em runtime; o default no .rpt
+              só pré-preenche, não chega para a exportação no servidor).
   AREPORTV : associar à função X3 onde o relatório deve aparecer.
+
+  Os valores por defeito no .rpt (artigo=M003147, datini=2000, datfim=2099,
+  site=vazio) servem apenas para pré-preencher o ecrã de parâmetros do X3.
 
 ================================================================
  Tabelas verificadas em C:\X3-KB ; dados validados contra tebx3.
