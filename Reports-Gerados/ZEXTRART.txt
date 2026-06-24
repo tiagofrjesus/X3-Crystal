@@ -1,0 +1,105 @@
+================================================================
+ RELATÓRIO: ZEXTRART  —  Extrato de Movimentos de Stock (por artigo)
+ Gerado programaticamente (SDK Crystal Reports 2020 / RAS)
+================================================================
+
+FICHEIRO        : ZEXTRART.rpt
+ORIENTAÇÃO      : Landscape (A4)
+COLLECTION X3   : TEB   (schema da base de dados tebx3)
+
+----------------------------------------------------------------
+1. FONTE DE DADOS  (Command SQL — uma só "tabela" no Crystal)
+----------------------------------------------------------------
+Nome do Command : X3MOV
+Tipo de ligação : ODBC (RDO)  —  DSN = ADX_CRCNN_TEBX3   (base tebx3)
+                  (mesmo tipo de ligação dos relatórios X3 standard, p/ o
+                   print engine do X3 aplicar o logon — crdb_odbc.dll)
+
+O relatório usa UM comando SQL (não tabelas ligadas). Toda a lógica
+de junção e o saldo acumulado estão no SQL. O print server do X3 (TEBPRT)
+repõe a ligação via o DSN ADX_CRCNN_TEBX3.
+
+NOTA: foi construído contra 192.168.1.211 (OLE DB) para obter os campos e
+depois a ligação foi repontada para o DSN ODBC ADX_CRCNN_TEBX3 (sem verificar,
+pois esse DSN só resolve no print server).
+
+----------------------------------------------------------------
+2. TABELAS X3 USADAS (dentro do Command SQL)
+----------------------------------------------------------------
+  TEB.STOJOU      (STJ) — Journal de stock (movimentos)        [tabela principal]
+  TEB.ITMMASTER   (ITM) — Artigos (para a descrição)           [LEFT JOIN por ITMREF_0]
+  TEB.FACILITY    (FCY) — Sites/armazéns (para o nome do site) [LEFT JOIN por FCY_0]
+  TEB.COMPANY     (CPY) — Empresa (nome no cabeçalho)          [lido ao gerar; texto fixo]
+
+----------------------------------------------------------------
+3. CAMPOS DO RELATÓRIO  (alias do Command  <-  coluna de origem)
+----------------------------------------------------------------
+  Site         <- STOJOU.STOFCY_0        (site de armazenagem)
+  SiteNome     <- FACILITY.FCYNAM_0       (nome do site)
+  Artigo       <- STOJOU.ITMREF_0         (referência do artigo)
+  Descricao    <- ITMMASTER.ITMDES1_0     (descrição do artigo)
+  DataMov      <- STOJOU.IPTDAT_0         (data do movimento, dd/MM/yyyy)
+  TipoMov      <- STOJOU.TRSTYP_0         (tipo de transação; menu local 704, traduzido p/ texto)
+  NumDoc       <- STOJOU.VCRNUM_0         (nº do documento de origem)
+  Descritivo   <- STOJOU.MVTDES_0         (descritivo do movimento)
+  Qtd          <- STOJOU.QTYSTU_0         (quantidade em unidade de stock; com sinal +/-)
+  Un           <- STOJOU.STU_0            (unidade de stock)
+  Valor        <- STOJOU.AMTVAL_0         (valor do movimento)
+  Saldo        <- SUM(QTYSTU_0) OVER (...) (saldo acumulado por site, calculado no SQL)
+  Lote         <- STOJOU.LOT_0            (lote)
+
+----------------------------------------------------------------
+4. ESTRUTURA / LAYOUT
+----------------------------------------------------------------
+  Cabeçalho relatório : Nome da empresa + título + Artigo/Descrição
+  Cabeçalho de página : títulos das colunas
+  Grupo               : por Site (STOFCY)  -> cabeçalho "Site: <cod> <nome>"
+  Detalhe             : uma linha por movimento (colunas acima)
+  Rodapé de grupo     : "Subtotal site:"  + Soma(Qtd) + Soma(Valor)
+  Rodapé de relatório : "TOTAL GERAL:"    + Soma(Qtd) + Soma(Valor)
+  Rodapé de página    : "Impresso em <data/hora>"  +  "Página N de M"
+
+----------------------------------------------------------------
+5. PARÂMETROS  (a configurar no dicionário do relatório AREPORTD)
+----------------------------------------------------------------
+IMPLEMENTADO (o artigo já NÃO está fixo no SQL). Filtro por FÓRMULA DE SELEÇÃO:
+
+  PARÂMETRO   TIPO     USO                                       X3 (mapear em AREPORTD)
+  ---------   ------   --------------------------------------    -----------------------
+  artigo      String   {X3MOV.Artigo} = {?artigo}                artigo (ITM)  [obrigatório]
+  datini      Date     Date({X3MOV.DataReal}) >= {?datini}       datdeb (D)
+  datfim      Date     Date({X3MOV.DataReal}) <= {?datfim}       datfin (D)
+  site        String   {?site}="" OR {X3MOV.Site}={?site}        sitedeb/site (FCY) — vazio = todos
+
+  Fórmula completa de seleção de registos:
+    {X3MOV.Artigo} = {?artigo}
+    and Date({X3MOV.DataReal}) >= {?datini}
+    and Date({X3MOV.DataReal}) <= {?datfim}
+    and ({?site} = "" or {X3MOV.Site} = {?site})
+
+  Notas:
+  - DataMov é texto (dd/MM/yyyy) só para mostrar; o filtro de datas usa a coluna
+    DataReal (data real = STOJOU.IPTDAT_0).
+  - Saldo acumulado calculado por artigo+site (PARTITION BY ITMREF_0, STOFCY_0).
+  - site vazio ("") => todos os sites.
+  - Contexto supervisor X3 (auto, declarar se preciso): X3DOS, X3SIT1, X3SIT2, X3LAN, X3USR.
+
+NOTA DE DESEMPENHO: filtro por record selection (Command) => Crystal pode trazer
+muitos registos e filtrar do lado cliente. Se pesar em produção, migrar o filtro
+para WHERE/parâmetros de Command no SQL.
+
+NOTA DE DESEMPENHO: como o filtro é por record selection (Command), o Crystal
+pode trazer muitos registos e filtrar do lado do cliente. Se for pesado em
+produção, migrar o filtro do artigo/datas para parâmetro de Command no SQL.
+
+----------------------------------------------------------------
+6. REGISTO NO SAGE X3
+----------------------------------------------------------------
+  AREPORT  : criar RPTCOD = ZEXTRART, ligar ao ficheiro ZEXTRART.rpt,
+             definir o processo de inicialização se necessário.
+  AREPORTD : declarar os parâmetros do ponto 5 (nome, tipo, label, default).
+  AREPORTV : associar à função X3 onde o relatório deve aparecer.
+
+================================================================
+ Tabelas verificadas em C:\X3-KB ; dados validados contra tebx3.
+================================================================

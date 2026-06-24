@@ -1,0 +1,21 @@
+
+**** Log file opened at 2026-06-24 12:14:53.737833 UTC+01:00 (GMT Standard Time), Encoding UTF-8
+NW RFC Library: SDK variant, Release 750 Patch Level 14
+Compilation date          : Jun 15 2024 06:07:33
+CPIC library              : 754.2024.02.29 version 3
+NI library                : 40
+Kernel Release            : 754 Patch Level 325
+Current working directory : D:\Git\X3-Crystal\Reports-TEB
+Program                   : crw64
+Process ID                : 29532
+User                      : Tiago Jesus
+Hardware                  : PC with Windows NT 16x AMD64 Level 6 (Mod 197 Step 2)
+Binary Type               : 64bit
+Operating_system          : Windows NT 10.0
+Hostname                  : 14G8
+IP address                : 10.168.92.120
+IPv6 address              : fe80::a5f6:b9b3:33f:714c
+Global trace level        : 0
+
+2026-06-24 12:14:53.738478 [34664] >> Info entry
+	Did not find config file D:\Git\X3-Crystal\Reports-TEB\sapnwrfc.ini.
