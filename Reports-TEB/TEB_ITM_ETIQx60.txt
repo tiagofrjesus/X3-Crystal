@@ -1,0 +1,104 @@
+========================================================================
+ RELATÓRIO CRYSTAL — TEB_ITM_ETIQX60
+ Ficheiro : Reports-TEB/TEB_ITM_ETIQx60.rpt
+ Função   : Etiquetas de artigo (60 por folha), idioma POR
+ Folder   : TEBX3   |   Collection: TEB   |   BD: tebx3
+ Doc gerada por inspeção do .rpt (RAS SDK 32-bit)
+========================================================================
+
+------------------------------------------------------------------------
+1. TABELAS X3 UTILIZADAS (ligadas — não Command SQL)
+------------------------------------------------------------------------
+  ITMMASTER  (ITM)  — Ficha de artigo            [tabela principal]
+  TABUNIT    (TUN)  — Unidades de medida
+  ITMSALES   (ITS)  — Artigo-vendas
+  AVWTEXTRA         — Vista de textos traduzidos (ATEXTRA)   [no sub-report]
+
+  Nota: o esquema completo de colunas está em
+        C:/X3-KB/Sage X3 Docs/MCD/ITMMASTER.txt (e TABUNIT, ITMSALES, ATEXTRA).
+
+  Campos principais da ITMMASTER relevantes p/ etiqueta:
+    ITMREF_0    ← código do artigo   (chave / record selection)
+    ITMDES1_0   ← designação 1
+    ITMDES2_0   ← designação 2
+    ITMDES3_0   ← designação 3
+    EANCOD_0    ← código EAN / barras
+    STU_0       ← unidade de stock
+    TCLCOD_0    ← categoria estatística
+    (restantes colunas disponíveis no MCD)
+
+------------------------------------------------------------------------
+2. PARÂMETROS DO RELATÓRIO
+------------------------------------------------------------------------
+  A) Parâmetros de CONTEXTO X3 (prefixo X3 / reservados)
+     — injetados AUTOMATICAMENTE pelo supervisor; NÃO declarar em AREPORTD.
+
+     Param     Tipo      Conteúdo
+     -------   -------   ------------------------------------------------
+     etat      String    Código do relatório (X3ETA)
+     numedt    Number    Nº de edição
+     usr       String    Utilizador
+     X3DOS     String    Folder;máquina;serviço   (default: GX3APP)
+     X3LAN     String    IDIOMA  ← alimenta o sub-report de traduções
+                                    (sem default no .rpt)
+
+  B) Parâmetros de NEGÓCIO — declarar em AREPORTD (GEREP)
+
+     Param     Tipo      Uso
+     -------   -------   ------------------------------------------------
+     ITMREF    String    Filtro do artigo (record selection)
+     cPVP      Boolean   Mostrar PVP        (default no .rpt: True)
+     civa      Boolean   Mostrar IVA        (default no .rpt: True)
+
+------------------------------------------------------------------------
+3. RECORD SELECTION (report principal)
+------------------------------------------------------------------------
+  {ITMMASTER.ITMREF_0} = {?ITMREF}
+
+------------------------------------------------------------------------
+4. SUB-REPORT — TEXTETRAD.rpt (textos traduzidos)
+------------------------------------------------------------------------
+  Fonte: vista AVWTEXTRA (sobre ATEXTRA — chave CODFIC+ZONE+LANGUE+IDENT1)
+
+  Links (report principal -> sub-report):
+     {@Nomtable}            -> {AVWTEXTRA.CODFIC_0}   (tabela, ex. ITMMASTER)
+     {@Nomzone}             -> {AVWTEXTRA.ZONE_0}     (campo/designação)
+     {?X3LAN}               -> {AVWTEXTRA.LAN_0}      (IDIOMA)
+     {ITMMASTER.ITMREF_0}   -> {AVWTEXTRA.IDENT1_0}   (artigo)
+
+  IMPORTANTE: a label traduzida só aparece se houver linha em ATEXTRA para
+  (CODFIC, ZONE, LANGUE=X3LAN, IDENT1=artigo). Se o X3LAN chegar vazio
+  (ex.: sessão de pool SOAP/REST sem idioma), a label sai em BRANCO.
+  Verificar: SELECT LANGUE_0,ZONE_0,TEXTE_0 FROM TEB.ATEXTRA
+             WHERE CODFIC_0='ITMMASTER' AND IDENT1_0='<artigo>';
+
+------------------------------------------------------------------------
+5. CHAMADA X3 (subprograma de impressão)
+------------------------------------------------------------------------
+  Subprog PRINT_ITEM chama o motor de impressão:
+     Call ETAT(REPORT_CODE, DESTINATION, "", 0, "", ZTBPAR, ZTBVAL) From AIMP3
+
+  Parâmetros passados via ZTBPAR / ZTBVAL:
+     itmrefdeb = <artigo>
+     itmreffin = <artigo>
+     itmref    = <artigo>
+
+  REPORT_CODE = "TEB_ITM_ETIQX60"
+  DESTINATION : 0=preview 1=impressora 2=email 3=ficheiro
+
+------------------------------------------------------------------------
+6. REGISTO NO DICIONÁRIO X3
+------------------------------------------------------------------------
+  AREPORT  (ARP) — RPTCOD = TEB_ITM_ETIQX60
+                   Grupo   = 24 (Reports .rpt) ; CRYCOD = TEB_ITM_ETIQX60
+                   TRTINI  = processo de inicialização standard (se aplicável)
+                   TRTSPE  = processo específico custom (Z...) — opcional
+
+  AREPORTD (ARD) — parâmetros de negócio:
+                   ITMREF (Limite/artigo), cPVP (booleano), civa (booleano)
+                   (X3LAN/X3DOS/etat/numedt/usr NÃO se declaram — contexto)
+
+  AREPORTV (ARV) — associação relatório -> função X3
+
+  Layout: etiquetas, 60 por folha (x60). Idioma alvo: POR.
+========================================================================
