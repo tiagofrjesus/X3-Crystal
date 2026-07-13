@@ -7,12 +7,19 @@
 ========================================================================
 
 ------------------------------------------------------------------------
-1. TABELAS X3 UTILIZADAS (ligadas — não Command SQL)
+1. TABELAS X3 UTILIZADAS (Command SQL sobre ODBC ADX_CRCNN_TEBX3)
 ------------------------------------------------------------------------
   ITMMASTER  (ITM)  — Ficha de artigo            [tabela principal]
   TABUNIT    (TUN)  — Unidades de medida
-  ITMSALES   (ITS)  — Artigo-vendas
+  ITMSALES   (ITS)  — Artigo-vendas               (BASPRI_0 = preço base)
   AVWTEXTRA         — Vista de textos traduzidos (ATEXTRA)   [no sub-report]
+  TARIFA            — Command SQL próprio (ver secção 7) — preço da tarifa
+                       de venda ZPPE, se ativa e dentro do período
+
+  Nota: as 3 primeiras eram tabelas nativas ligadas; foram convertidas para
+  Command "SELECT * FROM TEB.<tabela>" para permitir o join com TARIFA e
+  para poderem ser reapontadas (SetTableLocation) para o DSN de produção
+  sem precisar de revalidar o schema em live (ver memória x3-crystal-rpt-pipeline).
 
   Nota: o esquema completo de colunas está em
         C:/X3-KB/Sage X3 Docs/MCD/ITMMASTER.txt (e TABUNIT, ITMSALES, ATEXTRA).
@@ -101,4 +108,42 @@
   AREPORTV (ARV) — associação relatório -> função X3
 
   Layout: etiquetas, 60 por folha (x60). Idioma alvo: POR.
+
+------------------------------------------------------------------------
+7. PREÇO DA TARIFA DE VENDA (ZPPE) — substitui o BASPRI quando aplicável
+------------------------------------------------------------------------
+  Pedido: em vez de imprimir sempre {ITMSALES.BASPRI_0}, verificar se o
+  artigo tem preço na tarifa de venda ZPPE ("PRODUTO PREÇO ESTRATÉGICO"),
+  ativa e dentro do período de validade; se sim, imprimir esse preço, senão
+  cai para o BASPRI. Sem parâmetro novo — data de validade calculada em SQL
+  (GETDATE() no servidor), tabelas do motor standard de tarifas X3:
+    SPRICCONF (SPC) — parâmetros da tarifa (PLIENAFLG_0=2 → ativa)
+    SPRICFICH (SPF) — período de validade (PLISTRDAT_0 / PLIENDDAT_0)
+    SPRICLIST (SPL) — linha com o preço (PRI_0), critério artigo = PLICRI1_0
+
+  Novo Command table "TARIFA" (ligado a ITMMASTER por LEFT OUTER JOIN em
+  ITMREF_0), SQL em tools/crystal-gen/tarifa.sql:
+
+    SELECT SPL.PLICRI1_0 AS ITMREF_0, SPL.PRI_0 AS PRI_0
+    FROM TEB.SPRICLIST SPL
+    INNER JOIN TEB.SPRICFICH SPF ON SPF.PLI_0=SPL.PLI_0 AND SPF.PLICRD_0=SPL.PLICRD_0
+    INNER JOIN TEB.SPRICCONF SPC ON SPC.PLI_0=SPL.PLI_0
+    WHERE SPL.PLI_0='ZPPE' AND SPC.PLIENAFLG_0=2
+      AND SPF.PLISTRDAT_0 <= CAST(GETDATE() AS DATE)
+      AND SPF.PLIENDDAT_0 >= CAST(GETDATE() AS DATE)
+
+  Nova fórmula PrecoBase (substitui {ITMSALES.BASPRI_0} nas fórmulas
+  PVPcIVA e lbl_PVP, que alimentam a etiqueta — a base é sempre ex-IVA,
+  SPRICCONF.PRITYP_0=1 para ZPPE confirma que a tarifa também é ex-IVA):
+
+    PrecoBase = if not isnull({TARIFA.PRI_0}) then {TARIFA.PRI_0}
+                else {ITMSALES.BASPRI_0}
+
+  Verificado com dados reais (192.168.1.211/tebx3):
+    M013479 — tarifa ZPPE ativa, PRI_0=3.57, BASPRI_0=3.69 → imprime 3.57
+    M012446 — sem tarifa ZPPE (PRI_0=NULL)  → cai para BASPRI_0=6.23
+
+  Se no futuro passar a usar outra tarifa (ex. ZPVP/ZCIVA) ou vários PLI
+  com prioridade, só é preciso ajustar o WHERE do Command TARIFA — o resto
+  (join, PrecoBase, PVPcIVA, lbl_PVP) mantém-se.
 ========================================================================
