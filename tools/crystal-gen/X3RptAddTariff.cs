@@ -15,8 +15,13 @@ public class X3RptAddTariff {
   static void Lg(string m){ log.Append(m).Append(" | "); }
   static ISCRField Fld(ISCRTable t,string n){ foreach(ISCRField f in t.DataFields) if(f.Name==n) return f; return null; }
 
-  static CrystalDecisions.ReportAppServer.DataDefModel.ConnectionInfo OdbcCi(string dsn,string db,string user,string pass){
-    var logon=new PropertyBagClass(); logon.Add("DSN",dsn); logon.Add("Database",db); logon.Add("UseDSNProperties","False"); logon.Add("UID",user); logon.Add("PWD",pass);
+  // embedCreds=true SÓ para builds de teste local (o ExportToDisk local precisa de UID/PWD
+  // no logon bag). Para o ficheiro FINAL de produção tem de ser false: o print engine do X3
+  // fornece as credenciais em runtime, e UID/PWD embutidos causam "Falha de logon" no servidor
+  // (o ZEXTRART.rpt, que funciona no X3, foi gravado com o logon bag limpo).
+  static CrystalDecisions.ReportAppServer.DataDefModel.ConnectionInfo OdbcCi(string dsn,string db,string user,string pass,bool embedCreds){
+    var logon=new PropertyBagClass(); logon.Add("DSN",dsn); logon.Add("Database",db); logon.Add("UseDSNProperties","False");
+    if (embedCreds) { logon.Add("UID",user); logon.Add("PWD",pass); }
     var attr=new PropertyBagClass(); attr.Add("Database DLL","crdb_odbc.dll"); attr.Add("QE_DatabaseName",db); attr.Add("QE_DatabaseType","ODBC (RDO)"); attr.Add("QE_ServerDescription",dsn); attr.Add("QE_SQLDB","True"); attr.Add("SSO Enabled","False"); attr.Add("QE_LogonProperties",logon);
     var ci=new ConnectionInfoClass(); ci.Attributes=attr; ci.UserName=user; ci.Password=pass; ci.Kind=CrConnectionInfoKindEnum.crConnectionInfoKindCRQE;
     return ci;
@@ -37,7 +42,7 @@ public class X3RptAddTariff {
       // resolve para o mesmo servidor de produção (192.168.1.211/tebx3). OLE DB (SQLOLEDB) foi
       // tentado primeiro mas falhou a logon nesta máquina (provider ausente/obsoleto) — ODBC
       // é o que está confirmado a funcionar aqui (ver memória x3-crystal-rpt-pipeline).
-      var ci = OdbcCi(workServer, workDb, workUser, workPass);
+      var ci = OdbcCi(workServer, workDb, workUser, workPass, true);
 
       // 0) Converter as tabelas nativas já existentes (ITMMASTER/TABUNIT/ITMSALES) em Command
       //    (SELECT * passthrough) — necessário porque SetTableLocation numa Table nativa tenta
@@ -128,7 +133,7 @@ public class X3RptAddTariff {
         foreach (var t in all) {
           try {
             string cmdText = (t.Name=="TARIFA") ? tariffSql : ("SELECT * FROM TEB."+t.Name);
-            var nt = new CommandTableClass(); nt.Name=t.Name; nt.Alias=t.Alias; nt.CommandText=cmdText; nt.ConnectionInfo=OdbcCi(dsn,prodDb,prodUser,prodPass);
+            var nt = new CommandTableClass(); nt.Name=t.Name; nt.Alias=t.Alias; nt.CommandText=cmdText; nt.ConnectionInfo=OdbcCi(dsn,prodDb,prodUser,prodPass,false);
             rcd.DatabaseController.SetTableLocation(t, nt);
             Lg("repoint "+t.Name+" -> "+dsn);
           } catch (Exception e) { Lg("repoint "+t.Name+" ERR:"+e.Message); }
@@ -137,7 +142,7 @@ public class X3RptAddTariff {
           var sub = rcd.SubreportController.GetSubreport("TEXTETRAD.rpt");
           ISCRTable oldAv=null; foreach (ISCRTable t in sub.DatabaseController.Database.Tables) if (t.Name=="AVWTEXTRA") oldAv=t;
           if (oldAv!=null) {
-            var nt = new CommandTableClass(); nt.Name="AVWTEXTRA"; nt.Alias=oldAv.Alias; nt.CommandText="SELECT * FROM TEB.AVWTEXTRA"; nt.ConnectionInfo=OdbcCi(dsn,prodDb,prodUser,prodPass);
+            var nt = new CommandTableClass(); nt.Name="AVWTEXTRA"; nt.Alias=oldAv.Alias; nt.CommandText="SELECT * FROM TEB.AVWTEXTRA"; nt.ConnectionInfo=OdbcCi(dsn,prodDb,prodUser,prodPass,false);
             sub.DatabaseController.SetTableLocation(oldAv, nt);
             Lg("repoint subreport AVWTEXTRA -> "+dsn);
           }

@@ -7,19 +7,21 @@
 ========================================================================
 
 ------------------------------------------------------------------------
-1. TABELAS X3 UTILIZADAS (Command SQL sobre ODBC ADX_CRCNN_TEBX3)
+1. TABELAS X3 UTILIZADAS (nativas — o print engine do X3 remapeia a
+   ligação de TODAS as tabelas nativas para o DSN do folder em runtime)
 ------------------------------------------------------------------------
-  ITMMASTER  (ITM)  — Ficha de artigo            [tabela principal]
-  TABUNIT    (TUN)  — Unidades de medida
-  ITMSALES   (ITS)  — Artigo-vendas               (BASPRI_0 = preço base)
-  AVWTEXTRA         — Vista de textos traduzidos (ATEXTRA)   [no sub-report]
-  TARIFA            — Command SQL próprio (ver secção 7) — preço da tarifa
-                       de venda ZPPE, se ativa e dentro do período
+  ITMMASTER   (ITM)  — Ficha de artigo            [tabela principal]
+  TABUNIT     (TUN)  — Unidades de medida
+  ITMSALES    (ITS)  — Artigo-vendas               (BASPRI_0 = preço base)
+  AVWTEXTRA          — Vista de textos traduzidos (ATEXTRA)  [no sub-report]
+  ZETIQTARIFA        — VIEW SQL (alias TARIFA no relatório) — preço da
+                        tarifa ZPPE se ativa e no período (ver secção 7)
 
-  Nota: as 3 primeiras eram tabelas nativas ligadas; foram convertidas para
-  Command "SELECT * FROM TEB.<tabela>" para permitir o join com TARIFA e
-  para poderem ser reapontadas (SetTableLocation) para o DSN de produção
-  sem precisar de revalidar o schema em live (ver memória x3-crystal-rpt-pipeline).
+  IMPORTANTE (lição aprendida): NÃO converter tabelas em Command SQL neste
+  relatório. O print engine só consegue remapear a ligação de tabelas
+  NATIVAS; CommandTables ficam coladas ao DSN gravado no ficheiro e dão
+  "Falha de logon" em qualquer ambiente cujo DSN não coincida. Lógica SQL
+  extra deve entrar como VIEW no schema TEB, ligada como tabela nativa.
 
   Nota: o esquema completo de colunas está em
         C:/X3-KB/Sage X3 Docs/MCD/ITMMASTER.txt (e TABUNIT, ITMSALES, ATEXTRA).
@@ -121,16 +123,12 @@
     SPRICFICH (SPF) — período de validade (PLISTRDAT_0 / PLIENDDAT_0)
     SPRICLIST (SPL) — linha com o preço (PRI_0), critério artigo = PLICRI1_0
 
-  Novo Command table "TARIFA" (ligado a ITMMASTER por LEFT OUTER JOIN em
-  ITMREF_0), SQL em tools/crystal-gen/tarifa.sql:
-
-    SELECT SPL.PLICRI1_0 AS ITMREF_0, SPL.PRI_0 AS PRI_0
-    FROM TEB.SPRICLIST SPL
-    INNER JOIN TEB.SPRICFICH SPF ON SPF.PLI_0=SPL.PLI_0 AND SPF.PLICRD_0=SPL.PLICRD_0
-    INNER JOIN TEB.SPRICCONF SPC ON SPC.PLI_0=SPL.PLI_0
-    WHERE SPL.PLI_0='ZPPE' AND SPC.PLIENAFLG_0=2
-      AND SPF.PLISTRDAT_0 <= CAST(GETDATE() AS DATE)
-      AND SPF.PLIENDDAT_0 >= CAST(GETDATE() AS DATE)
+  Implementação: VIEW SQL "TEB.ZETIQTARIFA" (script em
+  tools/crystal-gen/ZETIQTARIFA_view.sql — TEM DE EXISTIR EM CADA BD onde
+  o relatório corre: dev teb @ X3-SQL\SQLDEV e prod tebx3 @ 192.168.1.211),
+  ligada no relatório como TABELA NATIVA com alias "TARIFA", LEFT OUTER
+  JOIN de ITMMASTER.ITMREF_0 -> TARIFA.ITMREF_0. Por ser nativa, o print
+  engine remapeia a ligação por folder — o mesmo .rpt serve dev e prod.
 
   Nova fórmula PrecoBase (substitui {ITMSALES.BASPRI_0} nas fórmulas
   PVPcIVA e lbl_PVP, que alimentam a etiqueta — a base é sempre ex-IVA,
@@ -139,11 +137,18 @@
     PrecoBase = if not isnull({TARIFA.PRI_0}) then {TARIFA.PRI_0}
                 else {ITMSALES.BASPRI_0}
 
-  Verificado com dados reais (192.168.1.211/tebx3):
+  Lógica verificada com dados reais (prod 192.168.1.211/tebx3, na v1):
     M013479 — tarifa ZPPE ativa, PRI_0=3.57, BASPRI_0=3.69 → imprime 3.57
     M012446 — sem tarifa ZPPE (PRI_0=NULL)  → cai para BASPRI_0=6.23
+  No dev (13/07/2026): a única linha ZPPE (M013479, 299.00) tem validade
+  até 12/07/2026 → view vazia → etiqueta imprime BASPRI (comportamento
+  correto; estender a data no X3 para testar o caminho da tarifa).
+
+  DEPLOY no print server: além de copiar o .rpt, APAGAR o ficheiro de
+  cache "TEB_ITM_ETIQx60_CrDll_<FOLDER>.rpt" da mesma pasta — é a cópia
+  remapeada gerada pelo engine; se ficar, pode continuar a servir a antiga.
 
   Se no futuro passar a usar outra tarifa (ex. ZPVP/ZCIVA) ou vários PLI
-  com prioridade, só é preciso ajustar o WHERE do Command TARIFA — o resto
-  (join, PrecoBase, PVPcIVA, lbl_PVP) mantém-se.
+  com prioridade, só é preciso ajustar o WHERE da view ZETIQTARIFA (nas
+  BDs) — o .rpt não precisa de ser regenerado.
 ========================================================================
