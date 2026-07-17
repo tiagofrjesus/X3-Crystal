@@ -1,0 +1,126 @@
+========================================================================
+ RELATÓRIO CRYSTAL — TEB_PIECE (cópia customizada de PIECE, sem tocar no std)
+ Ficheiro : Reports-TEB/TEB_PIECE.rpt
+ Base     : Reports-TEB/PIECE.rpt (standard, NÃO alterado)
+ Função   : Extrato de peça contabilística (lançamentos GACCENTRY/GACCENTRYD)
+ Folder   : TEBX3   |   Collection: TEB   |   BD: tebx3
+========================================================================
+
+------------------------------------------------------------------------
+1. PORQUÊ ESTE FICHEIRO SEPARADO
+------------------------------------------------------------------------
+  O pedido original era alterar o "PIECE" standard, mas descobrimos (por
+  teste direto no X3: renomear "PIECE" para "ZPIECE" na lista faz os
+  dados desaparecerem, com o MESMO .rpt) que o motor de impressão do X3
+  resolve a ligação/pasta com base no CÓDIGO do relatório registado em
+  AREPORT (dicionário), não só no ficheiro .rpt. Por isso:
+
+    - Reports-TEB/PIECE.rpt fica como estava (standard, intocado).
+    - Reports-TEB/TEB_PIECE.rpt é a cópia com o novo layout (retrato +
+      info da empresa), a implantar sob um CÓDIGO DE RELATÓRIO NOVO
+      ("TEB_PIECE") registado à parte no dicionário X3 — ver secção 3.
+
+------------------------------------------------------------------------
+2. ALTERAÇÕES DE LAYOUT (idênticas às descritas antes para o PIECE)
+------------------------------------------------------------------------
+  a) Orientação: PaperSize=A4, Orientation=Portrait, dissociado da
+     impressora, ModifyUserPaperSize(16838,11906) (altura,largura twips).
+
+  b) Todos os objetos foram reescalados horizontalmente (Left e Width)
+     por um fator R = 11906/16838 ≈ 0.7071 — EXCETO os objetos de Texto
+     (legendas fixas), que só são REPOSICIONADOS (Left), mantendo a
+     Width original (o desenho original já tinha essas caixas no limite
+     exato do texto; encolher a largura cortava-o, ex. "Estab." → "Esta").
+
+  c) Nova tabela NATIVA "BPADDRESS" (alias BPADDRESS_FCY, QualifiedName
+     "TEB.BPADDRESS"), LEFT OUTER JOIN a partir de FACILITY:
+        {FACILITY.BPAADD_0} = {BPADDRESS_FCY.BPAADD_0}
+        {FACILITY.FCY_0}    = {BPADDRESS_FCY.BPANUM_0}
+     (mesmo padrão já usado em TEB_PAG.rpt.) Entrou como tabela NATIVA
+     (não Command) — lição já registada em TEB_ITM_ETIQx60.txt: o print
+     engine do X3 só remapeia ligações de tabelas nativas para o DSN do
+     folder em runtime.
+
+  d) Nova fórmula "lbl_companyinfo" (idêntica à de TEB_PAG.rpt):
+        {COMPANY.CPYNAM_0} + " - " + {BPADDRESS_FCY.BPAADDLIG_0} + " - "
+        + {BPADDRESS_FCY.POSCOD_0} + "-" + {BPADDRESS_FCY.CTY_0} + " - "
+        + {COMPANY.NID_0}
+
+  e) Novo campo "lblcompanyinfo1" no Page Footer (Left=105, Width=11700,
+     Height=220, Top=0), no espaço livre acima do subreport do logo.
+
+  Ferramenta usada: tools/crystal-gen/X3RptPiecePortrait.cs +
+  tools/crystal-gen/Convert-PiecePortrait.ps1 (correu a partir do
+  PIECE.rpt original, gravou como TEB_PIECE.rpt).
+
+------------------------------------------------------------------------
+3. REGISTO NO DICIONÁRIO X3 — POR FAZER (fora do alcance deste ambiente
+   de dev; tem de ser feito no cliente X3 por quem tem acesso)
+------------------------------------------------------------------------
+  Ler primeiro a config. ATUAL de "PIECE" em AREPORT (consultada via SQL
+  direta a título de referência — os valores abaixo são o que existe
+  hoje em TEB.AREPORT para RPTCOD_0='PIECE'):
+
+    GRP_0=3  MODULE_0=2  LAN_0=POR  MULLAN_0=2  ORIENT_0=2
+    RPTDES_0=21096  RPTSHO_0=21097  (referências de texto traduzido)
+    CRYCOD_0=PIECE   (nome do ficheiro .rpt associado)
+    TRTINI_0=TRTJOULEG   (subprograma de inicialização — é este que
+                          gera a linha em AREPORTM para a peça/diário,
+                          alimentando os joins de segurança do relatório;
+                          SEM isto o relatório imprime só o layout vazio,
+                          exatamente o sintoma visto com "ZPIECE")
+    FNC_0=CONSPCE        (função de controlo de acesso — tem de bater
+                          certo com {?X3FCT} usado no record selection)
+    AUZFCY_0=2
+
+  AREPORTD (parâmetros): 12 linhas p/ RPTCOD_0='PIECE' — societe,
+  sitedeb/sitefin, datedeb/datefin, nbaxe, detana, saut, pcedeb/pcefin,
+  referentiel, touref, impselections (mais X3ETA/X3DOS/etc. automáticos).
+
+  AREPORTV (associações a ecrãs, com valores por omissão ligados a
+  campos do ecrã de origem):
+    FONCTION_0=GESGPC (Gestão de Peças Contabilísticas — é aqui que o
+                        utilizador está quando imprime a peça) — 9 params
+    FONCTION_0=GESGAS — 6 params
+    (valores tipo "[F:LCA]NUM", "[F:LCA]CPY" = ligados aos campos do
+     registo aberto no ecrã GESGPC no momento da impressão)
+
+  PASSOS RECOMENDADOS (no cliente X3, não via SQL direta — a escrita
+  direta nas tabelas do dicionário não passa pela validação/cache do X3):
+
+    1. Development > Utilities > Dictionary > Copies > Reports (COPRPT)
+       — copiar RPTCOD "PIECE" para o novo código "TEB_PIECE". Esta
+       função deve copiar AREPORT + AREPORTD + AREPORTV de uma vez.
+
+    2. Development > Script dictionary > Reports (GESARP) — abrir
+       "TEB_PIECE" e confirmar/ajustar:
+         - CRYCOD_0 = TEB_PIECE  (tem de apontar para o ficheiro
+           TEB_PIECE.rpt, não para "PIECE")
+         - RPTDES_0/RPTSHO_0 — dar uma descrição própria (ex. "Peça
+           contabilística (retrato)") em vez de herdar a de PIECE, para
+           não confundir na lista
+         - Confirmar que TRTINI_0=TRTJOULEG e FNC_0=CONSPCE ficaram
+           copiados (são estes que fazem a peça ter dados — foi o que
+           faltou no teste "ZPIECE")
+
+    3. Copiar Reports-TEB/TEB_PIECE.rpt para a pasta de relatórios do
+       print server (mesmo local onde está o PIECE.rpt hoje).
+
+    4. Confirmar em GESGPC (ou onde for preciso invocar) que "TEB_PIECE"
+       aparece como opção de relatório a imprimir — se o botão de
+       impressão da peça estiver fixo no código "PIECE", pode ser
+       necessário um passo adicional (ex. permitir escolha de relatório
+       no diálogo de impressão, ou um botão/menu próprio) — a decidir
+       consoante o que o ecrã de impressão permitir.
+
+    5. Testar com o mesmo documento usado até agora (ODT-E012607/0002)
+       e confirmar dados + legendas completas + info da empresa/NIF no
+       rodapé.
+
+------------------------------------------------------------------------
+4. TABELAS X3 UTILIZADAS (nativas — remapeadas pelo print engine)
+------------------------------------------------------------------------
+  GACCENTRY, GACCENTRYD, GACCENTRYA, COMPANY, BPADDRESS_FCY (novo),
+  FACILITY, TABCUR, GTYPACCENT, GJOURNAL, ACCES, AFCTFCY, AREPORTM.
+  Sub-reports: BPARTER.rpt (BPARTNER), logo1/logo2/logo3 (ABLOB).
+========================================================================

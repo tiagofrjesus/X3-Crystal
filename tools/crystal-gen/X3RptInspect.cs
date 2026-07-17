@@ -11,6 +11,28 @@ using Eng = CrystalDecisions.CrystalReports.Engine;
 public class X3RptInspect {
   static StringBuilder o;
   static void W(string s){ o.AppendLine(s); }
+  static void DumpObj(string label, object obj) {
+    var sb = new StringBuilder(label + ": ");
+    if (obj == null) { W(sb.ToString() + "(null)"); return; }
+    foreach (var t in obj.GetType().GetInterfaces()) {
+      foreach (var p in t.GetProperties()) {
+        try {
+          var val = p.GetValue(obj, null);
+          if (val is System.Collections.IEnumerable && !(val is string)) {
+            var items = new StringBuilder();
+            foreach (var it in (System.Collections.IEnumerable)val) {
+              if (it is ISCRField) items.Append(((ISCRField)it).FormulaForm + " ");
+              else items.Append(it + " ");
+            }
+            sb.Append(p.Name + "=[" + items + "] ");
+          } else {
+            sb.Append(p.Name + "=" + val + " ");
+          }
+        } catch (Exception e) { sb.Append(p.Name + "=ERR:" + e.Message + " "); }
+      }
+    }
+    W(sb.ToString());
+  }
 
   public static string Dump(string path){
     o = new StringBuilder();
@@ -40,19 +62,34 @@ public class X3RptInspect {
       W("");
       W("=== LINKS ===");
       try {
-        var db = rcd.Database;
-        var prop = db.GetType().GetProperty("Links");
-        if (prop != null) {
-          var links = prop.GetValue(db, null) as System.Collections.IEnumerable;
-          foreach (object lk in links) {
-            var sb = new StringBuilder("Link: ");
-            foreach (var p in lk.GetType().GetProperties()) {
-              try { sb.Append(p.Name + "=" + p.GetValue(lk, null) + "; "); } catch {}
-            }
-            W(sb.ToString());
-          }
-        } else W("(no Links property found)");
-      } catch (Exception e) { W("links ERR: " + e.Message); }
+        ISCRDatabase db = rcd.Database;
+        W("-- TableLinks --");
+        foreach (ISCRTableLink lk in db.TableLinks) {
+          var sb = new StringBuilder("Link: ");
+          try { sb.Append("Src=" + lk.SourceTableAlias + " "); } catch (Exception e) { sb.Append("Src ERR:" + e.Message + " "); }
+          try { sb.Append("Dst=" + lk.TargetTableAlias + " "); } catch (Exception e) { sb.Append("Dst ERR:" + e.Message + " "); }
+          try {
+            sb.Append("SrcFields=[");
+            foreach (string f in (System.Collections.IEnumerable)lk.SourceFieldNames) sb.Append(f + " ");
+            sb.Append("] ");
+          } catch (Exception e) { sb.Append("SrcFields ERR:" + e.Message + " "); }
+          try {
+            sb.Append("DstFields=[");
+            foreach (string f in (System.Collections.IEnumerable)lk.TargetFieldNames) sb.Append(f + " ");
+            sb.Append("] ");
+          } catch (Exception e) { sb.Append("DstFields ERR:" + e.Message + " "); }
+          try { sb.Append("JoinType=" + lk.JoinType); } catch (Exception e) { sb.Append("JoinType ERR:" + e.Message); }
+          W(sb.ToString());
+        }
+      } catch (Exception e) { W("links ERR: " + e.Message + "\n" + e.StackTrace); }
+
+      W("");
+      W("=== PRINT OPTIONS ===");
+      try {
+        var po = rcd.PrintOutputController.GetPrintOptions();
+        W("PaperSize=" + po.PaperSize + " Orientation=" + po.PaperOrientation
+          + " Dissociate=" + po.DissociatePageSizeAndPrinterPaperSize);
+      } catch (Exception e) { W("printopts ERR: " + e.Message); }
 
       W("");
       W("=== FORMULA FIELDS ===");
