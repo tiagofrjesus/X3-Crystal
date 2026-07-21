@@ -54,68 +54,75 @@
   PIECE.rpt original, gravou como TEB_PIECE.rpt).
 
 ------------------------------------------------------------------------
-3. REGISTO NO DICIONÁRIO X3 — POR FAZER (fora do alcance deste ambiente
-   de dev; tem de ser feito no cliente X3 por quem tem acesso)
+3. REGISTO NO DICIONÁRIO X3 (feito, exceto o passo 4 — ver abaixo)
 ------------------------------------------------------------------------
-  Ler primeiro a config. ATUAL de "PIECE" em AREPORT (consultada via SQL
-  direta a título de referência — os valores abaixo são o que existe
-  hoje em TEB.AREPORT para RPTCOD_0='PIECE'):
+  AREPORT/AREPORTD/AREPORTV para "TEB_PIECE" já foram copiados de "PIECE"
+  via COPRPT + GESARP (confirmado por SQL: AREPORT ok, AREPORTD com as
+  12 linhas de parâmetros, AREPORTV com as 6 linhas GESGAS — faltavam as
+  9 GESGPC, já corrigido).
 
-    GRP_0=3  MODULE_0=2  LAN_0=POR  MULLAN_0=2  ORIENT_0=2
-    RPTDES_0=21096  RPTSHO_0=21097  (referências de texto traduzido)
-    CRYCOD_0=PIECE   (nome do ficheiro .rpt associado)
-    TRTINI_0=TRTJOULEG   (subprograma de inicialização — é este que
-                          gera a linha em AREPORTM para a peça/diário,
-                          alimentando os joins de segurança do relatório;
-                          SEM isto o relatório imprime só o layout vazio,
-                          exatamente o sintoma visto com "ZPIECE")
-    FNC_0=CONSPCE        (função de controlo de acesso — tem de bater
-                          certo com {?X3FCT} usado no record selection)
-    AUZFCY_0=2
+  CAUSA RAIZ DO "SEM DADOS" (confirmada por SQL + código-fonte):
+  TEB.AREPORTM (tabela temporária de chave de impressão) tem chave
+  NUMREQ+USR+RPTCOD+NUMLIG — cada relatório tem as SUAS PRÓPRIAS linhas.
+  Consultando: RPTCOD_0='PIECE' tinha 64 linhas (a mais recente da
+  própria sessão de teste); RPTCOD_0='TEB_PIECE' tinha ZERO, mesmo
+  depois de várias impressões de teste via AIMP.
 
-  AREPORTD (parâmetros): 12 linhas p/ RPTCOD_0='PIECE' — societe,
-  sitedeb/sitefin, datedeb/datefin, nbaxe, detana, saut, pcedeb/pcefin,
-  referentiel, touref, impselections (mais X3ETA/X3DOS/etc. automáticos).
+  A geração dessa linha é feita pelo subprograma TRTINI_0=TRTJOULEG
+  (o "processo de inicialização" do relatório, chamado pelo template
+  standard antes de invocar o Crystal Reports). Analisando o código-
+  fonte (Reports-BaseX3/TRTJOULEG.src, fornecido pelo utilizador):
 
-  AREPORTV (associações a ecrãs, com valores por omissão ligados a
-  campos do ecrã de origem):
-    FONCTION_0=GESGPC (Gestão de Peças Contabilísticas — é aqui que o
-                        utilizador está quando imprime a peça) — 9 params
-    FONCTION_0=GESGAS — 6 params
-    (valores tipo "[F:LCA]NUM", "[F:LCA]CPY" = ligados aos campos do
-     registo aberto no ecrã GESGPC no momento da impressão)
+    Subprog IMPRIME(NBPAR,PARAMETRE)
+    ...
+    Case ETAT                          # ETAT = código do relatório (X3ETA)
+     When "JOUGEN"
+      ...
+     When "LOT","PIECE"
+      ...
+      Gosub TRTJOU From RPTLEG         # É AQUI que se gera a linha AREPORTM
+    Endcase
+    End
 
-  PASSOS RECOMENDADOS (no cliente X3, não via SQL direta — a escrita
-  direta nas tabelas do dicionário não passa pela validação/cache do X3):
+  O Case só reconhece "JOUGEN", "LOT" e "PIECE" — SEM Default/Else. Para
+  ETAT="TEB_PIECE" o Case não bate em nada, a rotina não faz nada, nunca
+  chama TRTJOU, e por isso nunca há linha em AREPORTM → relatório mostra
+  só o layout estático, sem dados. TRTJOULEG é standard — não pode ser
+  alterado (regra: nunca modificar SUBxxx/processos standard; perde-se
+  em updates). Não tem entry point registado em AENTREE, logo não há
+  forma "limpa" (SPExxx) de o interceptar.
 
-    1. Development > Utilities > Dictionary > Copies > Reports (COPRPT)
-       — copiar RPTCOD "PIECE" para o novo código "TEB_PIECE". Esta
-       função deve copiar AREPORT + AREPORTD + AREPORTV de uma vez.
+  FIX (sem tocar em nada standard): criado Reports-TEB/ZTRTJOULEG.src —
+  um subprograma NOVO (prefixo Z) que replica exatamente o ramo "PIECE"
+  do TRTJOULEG original (mesma validação de empresa, mesmo
+  "Gosub TRTJOU From RPTLEG" — RPTLEG é standard e genérico, não é
+  específico de nenhum código de relatório, por isso pode ser reutilizado
+  sem alterações), mas adaptado para reconhecer ETAT="TEB_PIECE".
 
-    2. Development > Script dictionary > Reports (GESARP) — abrir
-       "TEB_PIECE" e confirmar/ajustar:
-         - CRYCOD_0 = TEB_PIECE  (tem de apontar para o ficheiro
-           TEB_PIECE.rpt, não para "PIECE")
-         - RPTDES_0/RPTSHO_0 — dar uma descrição própria (ex. "Peça
-           contabilística (retrato)") em vez de herdar a de PIECE, para
-           não confundir na lista
-         - Confirmar que TRTINI_0=TRTJOULEG e FNC_0=CONSPCE ficaram
-           copiados (são estes que fazem a peça ter dados — foi o que
-           faltou no teste "ZPIECE")
+  PASSOS RECOMENDADOS (no cliente X3):
 
-    3. Copiar Reports-TEB/TEB_PIECE.rpt para a pasta de relatórios do
-       print server (mesmo local onde está o PIECE.rpt hoje).
+    1. [FEITO] COPRPT: copiar RPTCOD "PIECE" → "TEB_PIECE"
+       (AREPORT+AREPORTD+AREPORTV).
 
-    4. Confirmar em GESGPC (ou onde for preciso invocar) que "TEB_PIECE"
-       aparece como opção de relatório a imprimir — se o botão de
-       impressão da peça estiver fixo no código "PIECE", pode ser
-       necessário um passo adicional (ex. permitir escolha de relatório
-       no diálogo de impressão, ou um botão/menu próprio) — a decidir
-       consoante o que o ecrã de impressão permitir.
+    2. [FEITO] GESARP: CRYCOD_0=TEB_PIECE; confirmar FNC_0=CONSPCE;
+       AREPORTV com as linhas GESGPC + GESGAS completas (15 no total).
 
-    5. Testar com o mesmo documento usado até agora (ODT-E012607/0002)
-       e confirmar dados + legendas completas + info da empresa/NIF no
-       rodapé.
+    3. [FEITO] Reports-TEB/TEB_PIECE.rpt copiado para a pasta de
+       relatórios do print server.
+
+    4. [POR FAZER] Development > Script dictionary > Scripts >
+       Subprograms (GESASU): criar subprograma "ZTRTJOULEG", colar o
+       conteúdo de Reports-TEB/ZTRTJOULEG.src, compilar/validar.
+
+    5. [POR FAZER] GESARP > abrir "TEB_PIECE" > mudar TRTINI_0 de
+       "TRTJOULEG" para "ZTRTJOULEG".
+
+    6. Testar com o mesmo documento (ODT-E012607/0002) e confirmar:
+       - aparece 1 linha nova em AREPORTM para RPTCOD_0='TEB_PIECE'
+         (pode confirmar-se por SQL: SELECT COUNT(*) FROM TEB.AREPORTM
+         WHERE RPTCOD_0='TEB_PIECE')
+       - o relatório mostra os dados da peça, legendas completas, info
+         da empresa/NIF no rodapé, layout em retrato.
 
 ------------------------------------------------------------------------
 4. TABELAS X3 UTILIZADAS (nativas — remapeadas pelo print engine)

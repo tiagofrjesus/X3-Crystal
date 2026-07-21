@@ -1,0 +1,94 @@
+#<AdxTL>@(#)7.0.0.0 $Revision$
+###########################################################################################################
+# To avoid the benchmark control
+###########################################################################################################
+
+$ACTION
+Return
+Case ACTION
+ When "CONT1"
+  If [M]ETAT="PIECE" & [M]OBJET(nolign-1)="GTE"
+   [M]DEBFIN(nolign-1)=4
+  Endif
+  When "INIPAR2"
+  If [M]ETAT="PIECE" & [M]OBJET(nolign-1)="GTE"
+   [M]DEBFIN(nolign-1)=1 : mkstat=1
+  Endif
+Endcase
+Return
+
+###########################################################################################################
+# Reports JOUGEN, PIECE and LOT
+###########################################################################################################
+
+Subprog IMPRIME(NBPAR,PARAMETRE)
+Variable Integer NBPAR
+Variable Char    PARAMETRE()(1..)
+
+Local Char    SOCDEB(GLONCPY), SOCFIN(GLONCPY), SOCIETE(GLONCPY)
+Local Char    ETAT(GLONARP)
+Local Char    PARAM(50)
+Local Integer K
+Local Integer NUMREQ
+Local Integer NBRLEG
+Local Char    TABLEG(GLONADI)(1..GNBSOC)
+Local Char    VALEUR(30)
+Local Date    DATDEB
+Local Decimal EXE, PER
+Local Integer REFERENTIEL
+
+If clalev([F:JOU])=0  : Local File GJOURNAL   [JOU]  : Endif
+If clalev([F:JOU1])=0 : Local File GJOURNAL   [JOU1] : Endif
+If clalev([F:CPY])=0  : Local File COMPANY    [CPY]  : Endif
+If clalev([F:ARM])=0  : Local File AREPORTM   [ARM]  : Endif
+If clalev([F:FCY])=0  : Local File FACILITY   [FCY]  : Endif
+If clalev([F:FGR])=0  : Local File FACGROUP   [FGR]  : Endif
+If clalev([F:PER])=0  : Local File PERIOD     [PER]  : Endif
+
+Call GETPARAM("X3ETA",NBPAR,PARAMETRE,ETAT) From ETAT
+K = instr(1,ETAT,".")
+If K
+ ETAT = left$(ETAT,K-1)
+Endif
+
+Case ETAT
+ When "JOUGEN"
+  Call GETPARAM("socdeb",NBPAR,PARAMETRE,SOCDEB) From ETAT
+  Call GETPARAM("socfin",NBPAR,PARAMETRE,SOCFIN) From ETAT
+  Filter [CPY] Where CPY>=SOCDEB and CPY<=SOCFIN and CPYLEGFLG=2
+  For [CPY]CPY0
+   If !find([F:CPY]LEG,TABLEG)
+    NBRLEG+=1
+    TABLEG(NBRLEG)=[F:CPY]LEG
+   Endif
+  Next
+  Filter [CPY]
+  Gosub TRTJOU From RPTLEG
+
+  If SOCDEB=SOCFIN
+   Call GETPARAM("referentiel",NBPAR,PARAMETRE,VALEUR) From ETAT
+   If VALEUR<>"?????" :  REFERENTIEL = val(VALEUR) : Endif
+   Call GETPARAM("datdeb",NBPAR,PARAMETRE,VALEUR) From ETAT
+   If VALEUR<>"?????" : DATDEB = VALEUR : Endif
+   Call GETPERSOC(SOCDEB,REFERENTIEL,DATDEB,EXE,PER) From CPTSUB
+   VALEUR = num$([F:PER]PERNUM)
+   Call SETPARAM("pernum",NBPAR,PARAMETRE,VALEUR) From ETAT
+  Else
+   VALEUR = num$("0")
+   Call SETPARAM("pernum",NBPAR,PARAMETRE,VALEUR) From ETAT
+  Endif
+
+ When "LOT","PIECE"
+  Call GETPARAM("societe",NBPAR,PARAMETRE,SOCIETE) From ETAT
+  Read [CPY]CPY0 = SOCIETE
+  If fstat | [F:CPY]CPYLEGFLG<>2
+   # Société incorrecte
+   Call ECR_TRACE(mess(81,116,1),1) From GESECRAN
+   GOK = 0 : End
+  Endif
+  NBRLEG = 1
+  TABLEG(1) = [F:CPY]LEG
+  Gosub TRTJOU From RPTLEG
+Endcase
+End
+
