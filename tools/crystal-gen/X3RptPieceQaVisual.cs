@@ -1,8 +1,7 @@
-// X3RptPieceTestExport — TESTE-ONLY: repoint de todas as tabelas do TEB_PIECE (já em retrato)
-// para uma ligação alcançável a partir desta máquina, afrouxa os joins de segurança
-// (AREPORTM/AFCTFCY, que exigem metadados de impressão diferida que não temos localmente) e
-// filtra um documento específico, para gerar um PDF de exemplo e validar visualmente o layout.
-// NUNCA usar este ficheiro/lógica no .rpt final — é só para QA local.
+// X3RptPieceQaVisual — TESTE-ONLY, QA VISUAL: igual a X3RptPieceTestExport mas neutraliza a
+// fórmula "typref" (usa TextOfChapter, que nunca resolve nesta máquina de dev) para permitir
+// gerar um PDF/HTML local e confirmar visualmente o layout do cabeçalho. NUNCA usar esta
+// alteração de fórmula no ficheiro final entregue — é só para inspeção visual local.
 // Compilar via Add-Type em PowerShell 32-BIT.
 using System;
 using System.Text;
@@ -13,7 +12,7 @@ using CrystalDecisions.ReportAppServer.ReportDefModel;
 using CrystalDecisions.Shared;
 using Eng = CrystalDecisions.CrystalReports.Engine;
 
-public class X3RptPieceTestExport {
+public class X3RptPieceQaVisual {
   static StringBuilder log;
   static void Lg(string m){ log.Append(m).Append(" | "); }
 
@@ -25,9 +24,6 @@ public class X3RptPieceTestExport {
     return ci;
   }
 
-  // tabelas grandes (centenas de milhar+ linhas): filtrar já no Command para não puxar a tabela
-  // inteira pela rede — só para o teste local, sem os índices/plano do X3 o filtro tem de ser
-  // aplicado no SQL, já que Crystal não empurra o record-selection para dentro de um Command "SELECT *".
   static Dictionary<string,string> BigTableFilter(string typDoc, string numDoc) {
     var d = new Dictionary<string,string>();
     string escT = typDoc.Replace("'", "''"), escN = numDoc.Replace("'", "''");
@@ -61,21 +57,16 @@ public class X3RptPieceTestExport {
       var rcd = eng.ReportClientDocument;
       Lg("loaded");
 
-      // 1) repoint de todas as tabelas do relatório principal
       var bigFilters = BigTableFilter(typDoc, numDoc);
       RepointAllTables(rcd.DatabaseController, workServer, workDb, workUser, workPass, bigFilters);
 
-      // 2) afrouxar (LEFT OUTER) os joins de segurança/metadados de impressão diferida, que exigem
-      //    combinações específicas de AREPORTM/AFCTFCY/ACCES que não reproduzimos localmente —
-      //    sem isto o INNER JOIN elimina a linha do GACCENTRY mesmo com o filtro certo.
       ISCRDatabase db = rcd.Database;
-      var linksToLoosen = new List<string[]>(); // {SrcAlias, DstAlias}
+      var linksToLoosen = new List<string[]>();
       linksToLoosen.Add(new[]{"GACCENTRY","AREPORTM"});
       linksToLoosen.Add(new[]{"COMPANY","AREPORTM"});
       linksToLoosen.Add(new[]{"GACCENTRYD","AFCTFCY"});
       linksToLoosen.Add(new[]{"AREPORTM","GJOURNAL"});
-      bool skipLoosen = Environment.GetEnvironmentVariable("X3_SKIP_LOOSEN") == "1";
-      foreach (var pair in skipLoosen ? new List<string[]>() : linksToLoosen) {
+      foreach (var pair in linksToLoosen) {
         try {
           ISCRTableLink found = null;
           foreach (ISCRTableLink lk in db.TableLinks) {
@@ -97,15 +88,7 @@ public class X3RptPieceTestExport {
         } catch (Exception e) { Lg("loosen " + pair[0] + "->" + pair[1] + " ERR: " + e.Message); }
       }
 
-      // 3) subreport BPARTER.rpt (BPARTNER) — mesma ligação alcançável
-      try {
-        var sub = rcd.SubreportController.GetSubreport("BPARTER.rpt");
-        RepointAllTables(sub.DatabaseController, workServer, workDb, workUser, workPass, bigFilters);
-        Lg("subreport BPARTER.rpt repoint OK");
-      } catch (Exception e) { Lg("subreport BPARTER.rpt ERR: " + e.Message); }
-
-      // 4) subreports de logo (logo1/logo2/logo3, tabela ABLOB) — melhor esforço, não bloqueia o teste
-      foreach (var lname in new[] { "logo1", "logo2", "logo3" }) {
+      foreach (var lname in new[] { "logo1", "logo2", "logo3", "logoHdr2", "logoHdr3" }) {
         try {
           var sub = rcd.SubreportController.GetSubreport(lname);
           RepointAllTables(sub.DatabaseController, workServer, workDb, workUser, workPass, bigFilters);
@@ -113,11 +96,25 @@ public class X3RptPieceTestExport {
         } catch (Exception e) { Lg("subreport " + lname + " ERR (ignorado): " + e.Message); }
       }
 
-      // 5) filtro simplificado (só para o teste) — ignora os parâmetros X3 normais
+      // QA-ONLY: neutralizar TODAS as formulas que usam TextOfChapter (nunca resolve localmente)
+      try {
+        var toFix = new List<ISCRFormulaField>();
+        foreach (ISCRFormulaField ff in rcd.DataDefController.DataDefinition.FormulaFields) {
+          if (ff.Text != null && ff.Text.IndexOf("TextOfChapter", StringComparison.OrdinalIgnoreCase) >= 0) toFix.Add(ff);
+        }
+        foreach (var ff in toFix) {
+          var newF = new FormulaFieldClass();
+          newF.Name = ff.Name;
+          newF.Text = "'[QA:" + ff.Name + "]'";
+          rcd.DataDefController.FormulaFieldController.Modify(ff, newF);
+          Lg("formula " + ff.Name + " neutralizada p/ QA visual");
+        }
+        if (toFix.Count == 0) Lg("nenhuma formula com TextOfChapter encontrada");
+      } catch (Exception e) { Lg("neutralizar TextOfChapter ERR: " + e.Message); }
+
       eng.RecordSelectionFormula = "{GACCENTRY.TYP_0} = '" + typDoc + "' and {GACCENTRY.NUM_0} = '" + numDoc + "'";
       Lg("record selection simplificado");
 
-      // 6) parâmetros obrigatórios (mesmo não usados no filtro, o motor exige valor)
       Action<string,object> setP = (n,v) => { try { eng.SetParameterValue(n, v); Lg("param " + n + " OK"); } catch (Exception e) { Lg("param " + n + " ERR: " + e.Message); } };
       setP("X3ETA", "TEBX3"); setP("X3DOS", "TEBX3;teb-sagesql;X3"); setP("X3OPE", "TESTE");
       setP("X3TIT", "Extrato de Peca Contabilistica"); setP("X3EDT", "1"); setP("X3CLI", "TEBX3");
@@ -130,13 +127,7 @@ public class X3RptPieceTestExport {
       setP("impselections", 1.0); setP("numedt", 1.0);
       setP("typpcedeb", typDoc); setP("typpcefin", typDoc);
 
-      // 7) exportar
-      bool asHtml = Environment.GetEnvironmentVariable("X3_EXPORT_HTML") == "1";
-      if (asHtml) {
-        eng.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.HTML40, pdfPath);
-      } else {
-        eng.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, pdfPath);
-      }
+      eng.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, pdfPath);
       Lg("exportado -> " + pdfPath);
       eng.Close();
     } catch (Exception ex) {

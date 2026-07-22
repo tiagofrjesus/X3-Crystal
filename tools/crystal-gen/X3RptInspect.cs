@@ -112,6 +112,20 @@ public class X3RptInspect {
       try { W(eng.RecordSelectionFormula); } catch (Exception e) { W("recsel ERR: " + e.Message); }
 
       W("");
+      W("=== SubreportController.ImportSubreport signatures (debug) ===");
+      try {
+        foreach (var mm in typeof(CrystalDecisions.ReportAppServer.Controllers.ISCRSubreportController).GetMethods()) {
+          if (mm.Name == "ImportSubreport" || mm.Name == "ImportSubreportEx") {
+            var ps = mm.GetParameters();
+            var sb = new StringBuilder(mm.Name + "(");
+            foreach (var p in ps) sb.Append(p.ParameterType.Name + " " + p.Name + ", ");
+            sb.Append(") -> " + mm.ReturnType.Name);
+            W(sb.ToString());
+          }
+        }
+      } catch (Exception e) { W("ERR:" + e.Message); }
+
+      W("");
       W("=== SECTIONS / OBJECTS ===");
       DumpAreas(rcd.ReportDefinition);
 

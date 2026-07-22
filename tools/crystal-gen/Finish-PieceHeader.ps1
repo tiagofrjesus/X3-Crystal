@@ -1,19 +1,13 @@
 <#
 .SYNOPSIS
-  TESTE-ONLY: exporta um PDF de exemplo do TEB_PIECE (já em retrato) para um documento específico,
-  repontando todas as tabelas para uma ligação alcançável e afrouxando os joins de segurança.
+  Remove o bloco de texto da empresa (redundante com o logótipo já importado) e adiciona a caixa
+  com borda à volta da grelha de metadados no TEB_PIECE.rpt.
   TEM DE CORRER EM POWERSHELL 32-BIT.
 #>
 [CmdletBinding()]
 param(
   [Parameter(Mandatory)][string]$RptPath,
-  [Parameter(Mandatory)][string]$PdfPath,
-  [Parameter(Mandatory)][string]$WorkServer,
-  [Parameter(Mandatory)][string]$WorkDb,
-  [Parameter(Mandatory)][string]$WorkUser,
-  [Parameter(Mandatory)][string]$WorkPass,
-  [string]$TypDoc = "ODT",
-  [string]$NumDoc = "ODT-E012607/0002"
+  [Parameter(Mandatory)][string]$OutPath
 )
 $ErrorActionPreference='Stop'
 if([Environment]::Is64BitProcess){ throw "Corre em PowerShell 32-BIT (SysWOW64)." }
@@ -29,13 +23,13 @@ $refs=@(
  "$gac\CrystalDecisions.ReportAppServer.Controllers\$v\CrystalDecisions.ReportAppServer.Controllers.dll"
  "$gac\CrystalDecisions.ReportAppServer.CommonObjectModel\$v\CrystalDecisions.ReportAppServer.CommonObjectModel.dll"
 )
-$cs = Get-Content (Join-Path $PSScriptRoot 'X3RptPieceTestExport.cs') -Raw -Encoding UTF8
+$cs = Get-Content (Join-Path $PSScriptRoot 'X3RptPieceHeaderFinish.cs') -Raw -Encoding UTF8
 Add-Type -TypeDefinition $cs -ReferencedAssemblies $refs -Language CSharp
 
-$dir = Split-Path -Parent $PdfPath
+$dir = Split-Path -Parent $OutPath
 if($dir -and -not (Test-Path $dir)){ New-Item -ItemType Directory -Force -Path $dir | Out-Null }
-if (Test-Path $PdfPath) { Remove-Item $PdfPath -Force }
+if (Test-Path $OutPath) { Remove-Item $OutPath -Force }
 
-$res = [X3RptPieceTestExport]::Export($RptPath,$PdfPath,$WorkServer,$WorkDb,$WorkUser,$WorkPass,$TypDoc,$NumDoc)
+$res = [X3RptPieceHeaderFinish]::Build($RptPath,$OutPath)
 Write-Host "LOG: $res"
-Write-Host ("PDF criado: " + (Test-Path $PdfPath) + "  ->  $PdfPath")
+Write-Host ("RPT criado: " + (Test-Path $OutPath) + "  ->  $OutPath")

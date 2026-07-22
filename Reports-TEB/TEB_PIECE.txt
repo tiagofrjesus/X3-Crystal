@@ -53,6 +53,103 @@
   tools/crystal-gen/Convert-PiecePortrait.ps1 (correu a partir do
   PIECE.rpt original, gravou como TEB_PIECE.rpt).
 
+  f) REDESENHO DO CABEÇALHO (2026-07-22): bloco empresa à esquerda +
+     terceiro à direita no cabeçalho do documento (Section13), e remoção
+     da coluna "Terceiro" da tabela de detalhe.
+
+     - Nova tabela NATIVA "BPARTNER" (alias BPARTNER_HDR), LEFT OUTER
+       JOIN a partir de GACCENTRYD.BPR_0 = BPARTNER_HDR.BPRNUM_0. Como é
+       ligação 1-para-muitos, colocado no cabeçalho de GRUPO do documento
+       (que imprime antes do Detail), o Crystal resolve naturalmente para
+       os dados da PRIMEIRA linha da peça — sem fórmulas/variáveis extra.
+       Decisão do utilizador: mostrar sempre o terceiro da 1ª linha (uma
+       peça pode ter linhas com terceiros diferentes; simplificação
+       aceite, cobre o caso comum).
+     - Bloco empresa (esquerda, campos novos hdrCompNome/hdrCompMorada/
+       hdrCompCidadeF/hdrCompNifF): {COMPANY.CPYNAM_0}, morada da
+       FACILITY (mesma BPADDRESS_FCY já usada no rodapé), código
+       postal-cidade, NIF — 4 linhas empilhadas, L=105 W=5500.
+     - Bloco terceiro (direita, hdrLbl0/hdrTerceiroF/hdrTerceiroNifF):
+       "Terceiro:" + {BPARTNER_HDR.BPRNUM_0}-{BPARTNER_HDR.BPRNAM_0} +
+       NIF (se existir) — L=6200 em diante.
+     - Coluna "Terceiro" removida da tabela de detalhe: Subreport4
+       (BPARTER.rpt por linha) e a legenda Texte30 removidos; Descrição
+       (Texte31 + Champ35/DES_0) alargada para L=600 W=4300 (antes W~1530).
+     - Os campos de metadados do documento (Doc.nr/Data/Diário/
+       Referência/Divisa/Categoria/Status/Estab.) foram reorganizados
+       numa grelha de 2 linhas (T=980 e T=1210) por baixo do bloco
+       empresa/terceiro, com larguras mais generosas — a causa do corte
+       visto no PDF de teste era o desenho original em 1 linha só, cuja
+       largura tinha ficado demasiado apertada depois do reescalonamento
+       para retrato.
+     - Section13 (cabeçalho do documento): altura aumentada de 704 para
+       ~1442 (o RAS ajustou automaticamente ao conteúdo, não ficou
+       exatamente nos 1550 pedidos, mas é suficiente).
+
+     Ferramenta: tools/crystal-gen/X3RptPieceHeaderRedesign.cs +
+     tools/crystal-gen/Redesign-PieceHeader.ps1.
+
+  g) 2ª PASSAGEM NO CABEÇALHO (2026-07-22, sessão seguinte): logótipo
+     GRÁFICO em vez do bloco de texto da empresa, e caixa com borda à
+     volta da grelha de metadados (como o Box3 do TEB_PAG.rpt).
+
+     - Bloco de texto "hdrCompNome/hdrCompMorada/hdrCompCidadeF/
+       hdrCompNifF" REMOVIDO (redundante com o logótipo gráfico).
+     - Logótipo "teb" (Subreport4, SubreportName=logoHdr2) importado a
+       partir do subreport "logo2" já embutido no próprio TEB_PIECE.rpt
+       (usado noutra secção) — técnica: GetSubreport("logo2") -> gravar
+       para .rpt "carrier" autónomo em disco -> ImportSubreportEx com o
+       caminho desse carrier. L=105 T=0 W=1500 H=848 (aspect ratio quase
+       inalterado face ao original 1486x840).
+     - Selo "22 ANOS" (Subreport5, SubreportName=logoHdr3) importado da
+       mesma forma a partir do subreport "logo3" (original 1607x1927,
+       usado no rodapé/relatório). Ficou inicialmente empilhado por
+       baixo do logo principal (L=105 T=900 W=750 H=899, aspect ratio
+       750/899=0.834 preservado a partir do original) — mas isso invadia
+       verticalmente a grelha de metadados que começa em T=980 (só 980
+       twips de folga antes da grelha, insuficiente para os 899 do selo
+       empilhado). CONFIRMADO POR RENDER VISUAL (ver bloco "Add() de Box"
+       abaixo) que a moldura do selo atravessava o texto "Doc. nr." /
+       "Data doc.". CORRIGIDO: selo reposicionado para ficar AO LADO do
+       logo principal em vez de por baixo — L=1755 T=0 W=700 H=839
+       (mesmo rácio 0.834, W/H recalculados para caber em T=0..839, com
+       839+141 de folga até a grelha em T=980). Left=1755 escolhido para
+       ficar logo a seguir ao logo principal (que termina em L=1605) com
+       um pequeno espaçamento.
+     - Caixa com borda "hdrMetaBox" à volta da grelha de metadados:
+       L=35 T=955 W=11750 H=495 — ver secção "Add() de BoxObjectClass NÃO
+       SUPORTADO" no LESSONS.md para a técnica usada (FieldObjectClass
+       com fórmula vazia + Border, NÃO BoxObjectClass).
+
+     Ferramentas: tools/crystal-gen/BuildLogoSub.ps1 (export dos
+     subreports embutidos para carriers), tools/crystal-gen/
+     Finish-PieceHeader.ps1 + X3RptPieceHeaderFinish.cs (reposicionar
+     selo, adicionar caixa, remover texto antigo).
+
+     VALIDAÇÃO VISUAL LOCAL: TextOfChapter (fórmulas "typref" e
+     "textofchapter") nunca resolve nesta máquina de dev — para conseguir
+     ver um PDF localmente foi preciso neutralizar essas fórmulas só numa
+     cópia de QA descartável (tools/crystal-gen/X3RptPieceQaVisual.cs +
+     QaVisual-Piece.ps1 — NUNCA usar esta técnica no ficheiro entregue).
+     Com isso, e sem pdftoppm instalado, renderizou-se o PDF para PNG
+     via a API nativa do Windows (Windows.Data.Pdf, WinRT, acessível a
+     partir de PowerShell — ver script auxiliar usado nesta sessão) para
+     inspeção visual direta, já que não há Ghostscript/ImageMagick/
+     poppler instalados nesta máquina.
+
+     ARMADILHA NOVA: ao testar visualmente com o repoint simplificado da
+     tabela ABLOB (SELECT * sem filtrar pela imagem certa), os subreports
+     de logo renderizaram como caixas retangulares SEM imagem que se
+     esticam até ao fundo da página (em vez de respeitarem a Height
+     declarada) — um artefacto do BLOB inválido/errado devolvido pelo
+     repoint de teste, CONFIRMADO removendo os subreports e vendo o
+     layout voltar ao normal (1 página, caixa da grelha bem desenhada).
+     Isto NÃO reflete o comportamento em produção (onde o X3 fornece o
+     BLOB certo via GESATX) — é uma limitação do ambiente de QA local,
+     tal como o TextOfChapter. A validação fiável destes objetos de
+     imagem continua a ser estrutural (Inspect-X3Report.ps1: bounding
+     boxes sem sobreposição), não o render visual local.
+
 ------------------------------------------------------------------------
 3. REGISTO NO DICIONÁRIO X3 (feito, exceto o passo 4 — ver abaixo)
 ------------------------------------------------------------------------
@@ -92,12 +189,63 @@
   em updates). Não tem entry point registado em AENTREE, logo não há
   forma "limpa" (SPExxx) de o interceptar.
 
-  FIX (sem tocar em nada standard): criado Reports-TEB/ZTRTJOULEG.src —
+  FIX v1 (sem tocar em nada standard): criado Reports-TEB/ZTRTJOULEG.src —
   um subprograma NOVO (prefixo Z) que replica exatamente o ramo "PIECE"
   do TRTJOULEG original (mesma validação de empresa, mesmo
-  "Gosub TRTJOU From RPTLEG" — RPTLEG é standard e genérico, não é
-  específico de nenhum código de relatório, por isso pode ser reutilizado
-  sem alterações), mas adaptado para reconhecer ETAT="TEB_PIECE".
+  "Gosub TRTJOU From RPTLEG"), adaptado para reconhecer ETAT="TEB_PIECE".
+
+  SEGUNDO BLOQUEIO (só apareceu depois de resolver o primeiro — confirmado
+  com ZTRTJOULEG a correr sem erro mas continuando com 0 linhas em
+  AREPORTM). Pedido o código-fonte de RPTLEG à Sage (suporte #74969).
+  RESPOSTA OFICIAL DA SAGE:
+
+    "The report is empty because it is linked to the script TRTJOULEG.
+    [...] Then the script RPTLEG is called: it also contains
+    instructions depending on the report code. So, it is not so simple
+    to duplicate this report. [...] Depending on what the customer wants
+    to do, he can also customize the standard report, which is not often
+    modified (last time, it was for 2021 R4)."
+
+  E, depois de enviar o RPTLEG.src pedido:
+
+    "A lista PIECE tem um tratamento standard associado que executa
+    determinadas ações em função da lista a imprimir. Esse tratamento
+    controla o nome exato da lista. [...] Se o que pretendem é apenas
+    efetuar ajustes ao ficheiro .rpt, a nossa sugestão é que não
+    dupliquem o registo no dicionário de listas. Mantenham o PIECE e
+    alterem apenas o ficheiro .rpt associado."
+
+  ==> Recomendação oficial da Sage: NÃO duplicar o código do relatório.
+      Decisão do cliente: manter na mesma o código TEB_PIECE em separado
+      (para poder imprimir via AIMP sem depender do botão da GESGPC/
+      GESGAS), assumindo o esforço extra de contornar o 2º bloqueio.
+
+  Analisando Reports-BaseX3/RPTLEG.src (fornecido pela Sage), a label
+  $TRTJOU (para onde o nosso Gosub salta) tem o SEU PRÓPRIO Case ETAT:
+
+    $TRTJOU
+    ...
+    Case ETAT
+     When "LOT", "PIECE2" : CRITERE="1=1"     # sem restrição de diário
+     When Default
+      ... monta CRITERE a partir de "joudeb"/"joufin" ...
+    Endcase
+    ...
+    Gosub TR2   # percorre [JOU] Where evalue(CRITERE) e escreve AREPORTM
+
+  Para ETAT="TEB_PIECE" cai no Default; os parâmetros "joudeb"/"joufin"
+  NÃO existem no dicionário deste relatório (nem no do PIECE original) →
+  CRITERE não bate com nenhum diário real → Filtro [JOU] vazio → TR2
+  nunca escreve nada em AREPORTM. Sem erro, porque é só um filtro vazio.
+
+  FIX v2 (ainda sem tocar em nada standard): confirmámos que o
+  TEB_PIECE.rpt NUNCA verifica {AREPORTM.RPTCOD_0} nos joins nem no
+  record selection (só usa NUMREQ_0/CLEA1_0/CLEA3_0) — por isso é
+  inofensivo a linha ficar gravada com RPTCOD="PIECE". ZTRTJOULEG.src
+  agora força ETAT="PIECE" (variável Local NOSSA, dentro do NOSSO
+  subprograma) só no instante imediatamente antes do
+  "Gosub TRTJOU From RPTLEG", enganando SÓ o Case desse RPTLEG para
+  entrar no ramo "1=1" — sem alterar uma linha de TRTJOULEG nem RPTLEG.
 
   PASSOS RECOMENDADOS (no cliente X3):
 
@@ -110,17 +258,18 @@
     3. [FEITO] Reports-TEB/TEB_PIECE.rpt copiado para a pasta de
        relatórios do print server.
 
-    4. [POR FAZER] Development > Script dictionary > Scripts >
-       Subprograms (GESASU): criar subprograma "ZTRTJOULEG", colar o
-       conteúdo de Reports-TEB/ZTRTJOULEG.src, compilar/validar.
+    4. [FEITO] GESASU: subprograma "ZTRTJOULEG" criado, TRTINI_0 do
+       TEB_PIECE apontado para ele (em vez de TRTJOULEG).
 
-    5. [POR FAZER] GESARP > abrir "TEB_PIECE" > mudar TRTINI_0 de
-       "TRTJOULEG" para "ZTRTJOULEG".
+    5. [POR FAZER] Atualizar o "ZTRTJOULEG" em GESASU com a versão FIX v2
+       deste ficheiro (o truque "ETAT='PIECE'" antes do Gosub) e testar
+       de novo via AIMP com o mesmo documento (ODT-E012607/0002).
 
-    6. Testar com o mesmo documento (ODT-E012607/0002) e confirmar:
-       - aparece 1 linha nova em AREPORTM para RPTCOD_0='TEB_PIECE'
-         (pode confirmar-se por SQL: SELECT COUNT(*) FROM TEB.AREPORTM
-         WHERE RPTCOD_0='TEB_PIECE')
+    6. Confirmar:
+       - aparece 1 linha nova em AREPORTM — mas atenção: fica com
+         RPTCOD_0='PIECE' (de propósito, ver FIX v2), não 'TEB_PIECE'.
+         Verificar por SQL: SELECT COUNT(*), MAX(CREDATTIM_0) FROM
+         TEB.AREPORTM WHERE RPTCOD_0='PIECE' antes/depois do teste.
        - o relatório mostra os dados da peça, legendas completas, info
          da empresa/NIF no rodapé, layout em retrato.
 

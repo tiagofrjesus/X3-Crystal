@@ -2,17 +2,27 @@
 ###########################################################################################################
 # ZTRTJOULEG — versão customizada (prefixo Z) do TRTJOULEG standard, só para o relatório TEB_PIECE.
 #
+# AVISO DA SAGE (pedido de suporte #74969): a família PIECE/JOUGEN/LOT tem tratamentos standard
+# (TRTJOULEG + RPTLEG) que controlam o NOME EXATO da lista — duplicar o código do relatório NÃO é
+# suportado oficialmente ("a nossa sugestão é que não dupliquem o registo no dicionário de listas").
+# Mantido por decisão explícita do cliente de continuar com o código TEB_PIECE em separado.
+#
 # PORQUÊ ESTE FICHEIRO: o TRTJOULEG standard (ver Reports-BaseX3/TRTJOULEG.src) faz "Case ETAT" só com
 # "JOUGEN", "LOT" e "PIECE" — sem Default/Else. Um código de relatório novo (TEB_PIECE) cai fora do Case,
 # a rotina não faz NADA, e nunca chega a "Gosub TRTJOU From RPTLEG" — que é quem gera a linha em
-# AREPORTM. Sem essa linha, o relatório imprime só o layout estático (legendas, cores), sem dados
-# (confirmado: 0 linhas em AREPORTM para RPTCOD_0='TEB_PIECE' depois de várias tentativas de impressão,
-# vs. 64 linhas para 'PIECE' no mesmo período).
+# AREPORTM. Sem essa linha, o relatório imprime só o layout estático (legendas, cores), sem dados.
+#
+# SEGUNDO BLOQUEIO (encontrado depois, com o RPTLEG.src fornecido pela Sage): mesmo replicando o ramo
+# "PIECE" aqui, a label $TRTJOU DENTRO do RPTLEG TAMBÉM faz "Case ETAT / When "LOT","PIECE2" ->
+# CRITERE=1=1" (sem restrição de diário); para "TEB_PIECE" cai no Default, que monta CRITERE a partir
+# de parâmetros "joudeb"/"joufin" que NÃO existem no dicionário deste relatório — filtro fica vazio,
+# zero linhas em AREPORTM, mesmo sem erro nenhum. Contornado abaixo forçando ETAT="PIECE" só no
+# instante do Gosub (ver comentário no código) — o relatório TEB_PIECE.rpt nunca verifica
+# {AREPORTM.RPTCOD_0}, por isso é inofensivo gravar a linha com RPTCOD="PIECE".
 #
 # Este ficheiro replica EXATAMENTE o ramo "PIECE" do TRTJOULEG original, adaptado para "TEB_PIECE",
-# SEM alterar uma linha do TRTJOULEG standard (nunca editar SUBxxx / processos standard — perdem-se
-# em updates). NÃO reimplementa TRTJOU: continua a delegar para RPTLEG (subprograma standard,
-# genérico, não específico de nenhum código de relatório).
+# SEM alterar uma linha do TRTJOULEG nem do RPTLEG standard (nunca editar SUBxxx / processos standard
+# — perdem-se em updates). NÃO reimplementa TRTJOU: continua a delegar para RPTLEG.
 #
 # IMPORTANTE: "Gosub TRTJOU From RPTLEG" não passa parâmetros — o código de TRTJOU (em RPTLEG)
 # executa referenciando variáveis Local pelo NOME EXATO que espera encontrar já declaradas neste
@@ -22,10 +32,11 @@
 # RPTLEG (confirmado: "Erro 6 : Variável inexistente PARAM" ao testar sem esta declaração completa).
 #
 # INSTALAÇÃO (no cliente X3, GESASU — Development > Script dictionary > Scripts > Subprograms):
-#   1. Criar subprograma "ZTRTJOULEG", colar este código-fonte, compilar/validar.
-#   2. GESARP > abrir "TEB_PIECE" > mudar TRTINI_0 de "TRTJOULEG" para "ZTRTJOULEG".
-#   3. Testar impressão do mesmo documento (ODT-E012607/0002) e confirmar que aparece 1 linha nova em
-#      AREPORTM para RPTCOD_0='TEB_PIECE' e que o relatório mostra os dados.
+#   1. Atualizar o subprograma "ZTRTJOULEG" com este código-fonte, compilar/validar.
+#   2. Confirmar em GESARP que "TEB_PIECE" tem TRTINI_0="ZTRTJOULEG".
+#   3. Testar impressão do mesmo documento (ODT-E012607/0002) via AIMP e confirmar que aparece 1
+#      linha nova em AREPORTM (SELECT COUNT(*) FROM TEB.AREPORTM WHERE RPTCOD_0='PIECE' — vai
+#      aparecer lá, não em 'TEB_PIECE', ver nota acima) e que o relatório mostra os dados.
 ###########################################################################################################
 
 $ACTION
@@ -76,17 +87,10 @@ If K
  ETAT = left$(ETAT,K-1)
 Endif
 
-# TEMPORÁRIO — remover depois de confirmar o valor de ETAT em runtime
-Infbox "DEBUG ETAT=[" + ETAT + "]"
-
 Case ETAT
  When "TEB_PIECE"
-  # TEMPORÁRIO — remover depois de confirmar
-  Infbox "DEBUG entrou no ramo TEB_PIECE"
   Call GETPARAM("societe",NBPAR,PARAMETRE,SOCIETE) From ETAT
   Read [CPY]CPY0 = SOCIETE
-  # TEMPORÁRIO — remover depois de confirmar
-  Infbox "DEBUG societe=[" + SOCIETE + "] fstat=" + num$(fstat) + " CPYLEGFLG=" + num$([F:CPY]CPYLEGFLG)
   If fstat | [F:CPY]CPYLEGFLG<>2
    # Société incorrecte
    Call ECR_TRACE(mess(81,116,1),1) From GESECRAN
@@ -94,8 +98,19 @@ Case ETAT
   Endif
   NBRLEG = 1
   TABLEG(1) = [F:CPY]LEG
+  # TRUQUE NECESSÁRIO: dentro de RPTLEG.src, a label $TRTJOU faz "Case ETAT / When "LOT","PIECE2""
+  # -> CRITERE="1=1" (sem restrição de diário, o que qualquer relatório desta família precisa);
+  # para qualquer OUTRO valor de ETAT (inclui "TEB_PIECE") cai no "Default", que monta CRITERE a
+  # partir dos parâmetros "joudeb"/"joufin" — que NÃO existem no dicionário do TEB_PIECE (copiado
+  # de PIECE, que também não os tem). Resultado: CRITERE não bate com nenhum diário real, o Filtro
+  # [JOU] não devolve nada, e a label TR2 nunca escreve nenhuma linha em AREPORTM (confirmado:
+  # passou pelo Gosub sem erro, mas 0 linhas novas em AREPORTM).
+  # O relatório TEB_PIECE.rpt NUNCA verifica {AREPORTM.RPTCOD_0} nos joins nem no record selection
+  # (só usa NUMREQ_0/CLEA1_0/CLEA3_0) — por isso é inofensivo que a linha fique gravada com
+  # RPTCOD="PIECE" em vez de "TEB_PIECE". Isto é só uma variável Local NOSSA (não é alterar nada
+  # standard) — força o Case de RPTLEG a entrar no ramo certo ("1=1"), sem tocar no TRTJOULEG nem
+  # no RPTLEG.
+  ETAT = "PIECE"
   Gosub TRTJOU From RPTLEG
-  # TEMPORÁRIO — remover depois de confirmar
-  Infbox "DEBUG passou por TRTJOU sem erro"
 Endcase
 End

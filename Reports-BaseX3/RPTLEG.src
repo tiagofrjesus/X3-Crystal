@@ -1,0 +1,531 @@
+#<AdxTL>@(#)9.0.0.0 $Revision$
+## Contains the library editing reports with table multi-leg
+
+Subprog IMPRIME(NBPAR,PARAMETRE)
+Variable Integer NBPAR
+Variable Char    PARAMETRE()(1..)
+
+Local Integer MAXSOC : MAXSOC = 1000
+Local Integer NBSOC, NBRLEG, I ,K
+Local Char    TBSOC(GLONCPY)(1..MAXSOC)
+Local Char    SOCIETE(GLONCPY), ETAT(GLONARP), PARAM(50)
+Local Char    TABLEG(GLONADI)(1..GNBSOC)
+Local Integer NUMREQ
+
+If clalev([F:ARM])=0  : Local File AREPORTM   [ARM]  : Endif
+If clalev([F:FGR])=0  : Local File FACGROUP   [FGR]  : Endif
+If clalev([F:CPY])=0  : Local File COMPANY    [CPY]  : Endif
+
+Call GETPARAM("X3ETA",NBPAR,PARAMETRE,ETAT) From ETAT
+K = instr(1,ETAT,".")
+If K : ETAT = left$(ETAT,K-1) : Endif
+Case ETAT
+ When "RELFAC"    : Call GETPARAM("cpy",NBPAR,PARAMETRE,SOCIETE) From ETAT
+ When "TRTCLIENT" : Call GETPARAM("societe",NBPAR,PARAMETRE,SOCIETE) From ETAT
+Endcase
+If SOCIETE<>""
+ Read [CPY]CPY0 = SOCIETE
+ If fstat
+  # Société incorrecte
+  Call ECR_TRACE(mess(81,116,1),1) From GESECRAN
+  GOK = 0 : End
+ Endif
+ If [F:CPY]CPYLEGFLG<>2
+  NBSOC = 0
+  For [FGR]FGR0 Where CPY=SOCIETE
+   Read [FCY]FCY0 = [F:FGR]FCY
+   If !find([F:FCY]LEGCPY,TBSOC(1..NBSOC))
+    If NBSOC>=MAXSOC : Break : Endif
+    NBSOC += 1
+    TBSOC(NBSOC) = [F:FCY]LEGCPY
+   Endif
+  Next
+  Read [CPY]CPY0 = TBSOC(1)
+ Else
+  NBSOC = 1
+  TBSOC(1) = SOCIETE
+ Endif
+Else
+ For [CPY] Where CPYLEGFLG=2
+  If NBSOC>=MAXSOC : Break : Endif
+   NBSOC += 1
+   TBSOC(NBSOC) = [F:CPY]CPY
+ Next
+ If NBSOC>=MAXSOC
+  # Trop de sociétés
+  Call ECR_TRACE(mess(108,104,1),1) From GESECRAN
+  GOK = 0 : End
+ Endif
+Endif
+Call LEGCPY(TBSOC,NBRLEG,TABLEG) From CPTDIV
+
+# Issue 111187 - 2015-11-17 by BRBAN : Need for priting report TRTCLIENT
+If func AFNC.ACTIV("KPO")>0 & [L]ETAT = "TRTCLIENT"
+
+  If clalev([F:SIHP])=0   : Local File SINVOICE  [SIHP]    : Endif
+  If clalev([F:TRPT])=0   : Local File TMPSRPT   [TRPT]   : Endif
+  Local Char KPONUMDEB  : [L]KPONUMDEB = ""
+  Local Char KPONUMFIN  : [L]KPONUMFIN = ""
+
+  Call GETPARAM("facdeb",NBPAR,PARAMETRE,[L]KPONUMDEB) From ETAT
+  Call GETPARAM("facfin",NBPAR,PARAMETRE,[L]KPONUMFIN) From ETAT
+  Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT
+  [L]NUMREQ = val(PARAM)
+
+  Filter [F:SIHP] Where [F:SIHP]NUM>=[L]KPONUMDEB & [F:SIHP]NUM<=[L]KPONUMFIN & find([F:SIHP]CPY,TBSOC(1..MAXSOC)) >0 # = [L]SOCIETE
+  For [F:SIHP]
+    Trbegin [TRPT]
+    [F:TRPT]NUMREQ = [L]NUMREQ
+    [F:TRPT]USR    = GUSER
+    [F:TRPT]RPTCOD = [L]ETAT
+    [F:TRPT]VCRNUM = [F:SIHP]NUM
+    Write [TRPT]
+    If !fstat : Commit : Else : Call FSTA("TRPT") From GLOCK :  Rollback : Break : Endif
+  Next
+  Filter [F:SIHP]
+Endif
+
+K = 0
+Gosub TRTPAM
+End
+
+####################################################
+## To define the field LEG in TABPAM
+####################################################
+$TRTPAM
+If clalev([F:TAM])=0  : Local File TABPAM     [TAM]  : Endif
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Call DEBTRANS From GLOCK
+Gosub TR0
+Gosub TRT_TAM
+Return
+
+####################################################
+## To define the field LEG in GJOURNAL
+####################################################
+$TRTJOU
+Local Char    CRITERE(50)
+Local Char    JOUSTR(GLONJOU),JOUEND(GLONJOU)
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Case ETAT
+ When "LOT", "PIECE2" : CRITERE="1=1"
+ When Default
+  Raz PARAM
+  Call GETPARAM("joudeb",NBPAR,PARAMETRE,PARAM) From ETAT
+  JOUSTR = PARAM
+  Call GETPARAM("joufin",NBPAR,PARAMETRE,PARAM) From ETAT
+  JOUEND = PARAM
+  CRITERE = '[JOU]JOU>="'+JOUSTR+'" & [JOU]JOU<="'+JOUEND+'"'
+Endcase
+Call DEBTRANS From GLOCK
+Gosub TR0
+Gosub TR2
+Return
+
+####################################################
+## To define the field LEG in GTYPACCENT
+####################################################
+$TRTGTE
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Call DEBTRANS From GLOCK
+Gosub TR0
+Gosub TRT_GTE
+Return
+
+####################################################
+## To define the field LEG in TABVAT
+####################################################
+$TRTTVT
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Call DEBTRANS From GLOCK
+Gosub TR0
+Gosub TRT_TVT
+Return
+
+####################################################
+## To define the field LEG in TABPAYTYP
+####################################################
+$TRTTPY
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Call DEBTRANS From GLOCK
+Gosub TR0
+If find(TYP_ETAT,"LETTREVIRR","LETTREVIRB","REMTRT","REMCHQ")
+ Gosub TRT_TPY
+Endif
+If find(TYP_ETAT,"LETTREVIRR","LETTREVIRB")
+ Gosub TRT_CDA_GTE
+Endif
+Return
+
+####################################################
+## To define the field LEG in TABVACBPR
+####################################################
+$TRTTVB
+If clalev([F:TVB])=0  : Local File TABVACBPR     [TVB]  : Endif
+Call GETPARAM("__REQUETE",NBPAR,PARAMETRE,PARAM) From ETAT : NUMREQ = val(PARAM)
+PARAM = num$(NUMREQ)
+Call SETPARAM("numedt",NBPAR,PARAMETRE,PARAM) From ETAT
+Call DEBTRANS From GLOCK
+Gosub TR0
+Gosub TRT_TVB
+Return
+
+####################################################
+## Delete the temporary table
+####################################################
+$TR0
+GOK = 1
+Trbegin [ARM]
+ Delete [ARM] Where RPTCOD=ETAT & USR=GUSER & CREDAT<date$
+Commit
+Return
+
+####################################################
+## Update the temporary table
+####################################################
+
+## JOU Journal
+$TR2
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ K = 0
+ For I=1 To NBRLEG
+  Filter [JOU] Where evalue(CRITERE) & (LEG=[L]TABLEG(I) | LEG="")
+& Order By Key CLE=JOU Asc ; LEG Desc
+  For [JOU]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:JOU]JOU
+   [F:ARM]CLEA2 = [F:JOU]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [JOU]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## TPE Type de pièce
+$TRT_GTE
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ K = 0
+ For I=1 To NBRLEG
+  Filter [GTE] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=TYP Asc ; LEG Desc
+  For [GTE]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:GTE]TYP
+   [F:ARM]CLEA2 = [F:GTE]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "GTYPACCENT"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [GTE]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## TPY Transactions saisie de règlments
+$TRT_TPY
+GOK=1
+If !clalev([TPY2]) : Local File TABPAYTYP [TPY2] : Endif
+Trbegin [ARM]
+ Raz [F:ARM]
+ K = 0
+ For I=1 To NBSOC
+  Call LEC_CPY(TBSOC(I)) From CPTLEC
+  For [TPY2]TPY0(1)
+   Call LEC_TPY_LEG([F:CPY]LEG,[F:TPY2]PAYTYP) From CPTLEC
+   If !fstat
+    #Dans le LEC_TPY_LEG on lit TPY avec le leg si il existe ou leg vide si il n'existe pas
+    #donc on a bien dan [F:TPY] le LEG qu'il faut pour notre CPY
+    K += 1
+    [F:ARM]RPTCOD = ETAT
+    [F:ARM]USR    = GUSER
+    [F:ARM]NUMREQ = NUMREQ
+    [F:ARM]NUMLIG = K
+    [F:ARM]CLEA1 = [F:TPY]PAYTYP
+    [F:ARM]CLEA2 = [F:TPY]LEG
+    [F:ARM]CLEA3 = [F:CPY]CPY
+    [F:ARM]CLEA4 = "TABPAYTYP"
+    Write [F:ARM]
+    If fstat
+     GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+    Endif
+   Endif
+  Next
+ Next
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## CDA Destination comptable
+$TRT_CDA_GTE
+GOK=1
+If !clalev([GTE2]) : Local File GTYPACCENT [GTE2] : Endif
+If !clalev([CDA2]) : Local File GACCDENCOD [CDA2] : Endif
+Trbegin [ARM]
+ Raz [F:ARM]
+ For I=1 To NBSOC
+  Call LEC_CPY(TBSOC(I)) From CPTLEC
+  For [CDA2]CDA0(1)
+   Call LEC_CDA_LEG([F:CPY]LEG,[F:CDA2]COD) From CPTLEC
+   If !fstat
+    #Dans le LEC_CDA_LEG on lit CDA avec le leg si il existe ou leg vide si il n'existe pas
+    #donc on a bien dan [F:CDA] le LEG qu'il faut pour notre CPY
+    K += 1
+    [F:ARM]RPTCOD = ETAT
+    [F:ARM]USR    = GUSER
+    [F:ARM]NUMREQ = NUMREQ
+    [F:ARM]NUMLIG = K
+    [F:ARM]CLEA1 = [F:CDA]COD
+    [F:ARM]CLEA2 = [F:CDA]LEG
+    [F:ARM]CLEA3 = [F:CPY]CPY
+    [F:ARM]CLEA4 = "GACCDENCOD"
+    Write [F:ARM]
+    If fstat
+     GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+    Endif
+   Endif
+  Next
+  For [GTE2]GTE0(1)
+   Call LEC_GTE_LEG([F:CPY]LEG,[F:GTE2]TYP) From CPTLEC
+   If !fstat
+    K += 1
+    [F:ARM]RPTCOD = ETAT
+    [F:ARM]USR    = GUSER
+    [F:ARM]NUMREQ = NUMREQ
+    [F:ARM]NUMLIG = K
+    [F:ARM]CLEA1 = [F:GTE]TYP
+    [F:ARM]CLEA2 = [F:GTE]LEG
+    [F:ARM]CLEA3 = [F:CPY]CPY
+    [F:ARM]CLEA4 = "GTYPACCENT"
+    Write [F:ARM]
+    If fstat
+     GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+    Endif
+   Endif
+  Next
+ Next
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## PAM Mode de règlement
+$TRT_TAM
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ For I=1 To NBRLEG
+  Filter [TAM] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=PAM Asc ; LEG Desc
+  For [TAM]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:TAM]PAM
+   [F:ARM]CLEA2 = [F:TAM]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "TABPAM"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [TAM]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## CDA Destination comptable
+$TRT_CDA
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ For I=1 To NBSOC
+  Call LEC_CPY(TBSOC(I)) From CPTLEC
+  For [CDA2]CDA0(1)
+   Call LEC_CDA_LEG([F:CPY]LEG,[F:CDA2]COD) From CPTLEC
+   If !fstat
+    #Dans le LEC_TPY_LEG on lit TPY avec le leg si il existe ou leg vide si il n'existe pas
+    #donc on a bien dan [F:TPY] le LEG qu'il faut pour notre CPY
+    K += 1
+    [F:ARM]RPTCOD = ETAT
+    [F:ARM]USR    = GUSER
+    [F:ARM]NUMREQ = NUMREQ
+    [F:ARM]NUMLIG = K
+    [F:ARM]CLEA1 = [F:CDA]COD
+    [F:ARM]CLEA2 = [F:CDA]LEG
+    [F:ARM]CLEA3 = [F:CPY]CPY
+    [F:ARM]CLEA4 = "GACCDENCOD"
+    Write [F:ARM]
+    If fstat
+     GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+    Endif
+   Endif
+  Next
+ Next
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+
+## TED Code Edition
+$TRT_TED
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ # K = 0 # A ne pas Faire !
+ For I=1 To NBRLEG
+  Filter [TED] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=CODEDT Asc ; LEG Desc
+  For [TED]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:TED]CODEDT
+   [F:ARM]CLEA2 = [F:TED]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "TABCODEDT"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [TED]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## TVB - Régime de Taxe Tiers
+$TRT_TVB
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ # K = 0 A ne pas faire !
+ For I=1 To NBRLEG
+  Filter [TVB] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=VACBPR Asc ; LEG Desc
+  For [TVB]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:TVB]VACBPR
+   [F:ARM]CLEA2 = [F:TVB]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "TABVACBPR"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [TVB]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## TVT - Codes taxes
+$TRT_TVT
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ For I=1 To NBRLEG
+  Filter [TVT] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=VAT Asc ; LEG Desc
+  For [TVT]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:TVT]VAT
+   [F:ARM]CLEA2 = [F:TVT]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "TABVAT"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+ Next
+ Filter [TVT]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
+## TDA - Code escompte-agio
+$TRT_TDA
+GOK=1
+Trbegin [ARM]
+ Raz [F:ARM]
+ # K = 0 A ne pas faire !
+ For I=1 To NBRLEG
+  Filter [TDA] Where LEG=[L]TABLEG(I) | LEG="" Order By Key CLE=DEP Asc ; LEG Desc
+  For [TDA]CLE(1)
+   K += 1
+   [F:ARM]RPTCOD = ETAT
+   [F:ARM]USR    = GUSER
+   [F:ARM]NUMREQ = NUMREQ
+   [F:ARM]NUMLIG = K
+   [F:ARM]CLEA1 = [F:TDA]DEP
+   [F:ARM]CLEA2 = [F:TDA]LEG
+   [F:ARM]CLEA3 = [L]TABLEG(I)
+   [F:ARM]CLEA4 = "TABDEPAGIO"
+   Write [F:ARM]
+   If fstat
+    GOK = 0 : Call FSTA("ARM") From GLOCK : Break 2
+   Endif
+  Next
+  # If the invoice doesn't have an early discount, we have to create an empty record
+  # in order that the link with the AREPORT table works in Crystal report
+  K += 1
+  [F:ARM]RPTCOD = ETAT
+  [F:ARM]USR    = GUSER
+  [F:ARM]NUMREQ = NUMREQ
+  [F:ARM]NUMLIG = K
+  [F:ARM]CLEA1 = ""
+  [F:ARM]CLEA2 = ""
+  [F:ARM]CLEA3 = [L]TABLEG(I)
+  [F:ARM]CLEA4 = "TABDEPAGIO"
+  Write [F:ARM]
+  If fstat
+   GOK = 0 : Call FSTA("ARM") From GLOCK : Break
+  Endif
+ Next
+ Filter [TDA]
+ If GOK=0 : Rollback : Return : Endif
+Commit
+Return
+
