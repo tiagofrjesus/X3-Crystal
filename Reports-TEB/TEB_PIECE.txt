@@ -150,6 +150,34 @@
      imagem continua a ser estrutural (Inspect-X3Report.ps1: bounding
      boxes sem sobreposição), não o render visual local.
 
+  h) FIX CRÍTICO (2026-07-23): ERR 504 "Missing parameter values" ao
+     imprimir via AIMP (Job 5811), causado pelo roundtrip GetSubreport()
+     -> SaveAs() -> ImportSubreportEx() usado no passo (g) para criar
+     Subreport4/logoHdr2 e Subreport5/logoHdr3. Esse roundtrip perdeu
+     DUAS coisas em relação ao subreport original (logo2/logo3), ambas
+     necessárias para o motor Crystal .NET real (não reproduzido no
+     preview local):
+       1. RecordFilter (filtro por ABLOB.CODBLB_0/IDENT1_0/IDENT3_0/
+          IDENT2_0) — ficou vazio ([]) nos dois subreports novos.
+       2. SubreportLinks do objeto de colocação no relatório principal —
+          o link explícito {?X3DOS}(principal) -> {?X3DOS}(subreport)
+          que logo2/logo3/logo1 têm (Subreport1/2/3) ficou com 0 entradas
+          em Subreport4/5.
+     Com o parâmetro X3DOS declarado (PromptToUser=True) mas sem uso
+     real (UseCount=0) nem partilha de valor com o parâmetro homónimo do
+     relatório principal, o motor de impressão real pedia o valor do
+     parâmetro em vez de o herdar — daí o erro.
+     FIX: reatribuir RecordFilter via
+     DataDefController.RecordFilterController.SetFormulaText(texto) (a
+     atribuição direta de RecordFilter.FreeEditingText NÃO persiste ao
+     gravar — confirmado nesta sessão) e recriar o SubreportLinks via
+     Clone+Modify do SubreportObject (mesma limitação de "atribuição
+     direta não persiste" documentada para Left/Top de outros objetos).
+     Depois do fix: UseCount de X3DOS em logoHdr2/logoHdr3 = 2, igual a
+     logo2/logo3. Ver LESSONS.md, secção "Subreports" para detalhe da
+     API descoberta. Ferramentas: tools/crystal-gen/X3RptFixSubFilter2.cs
+     + tools/crystal-gen/Fix-PieceSubFilter.ps1.
+
 ------------------------------------------------------------------------
 3. REGISTO NO DICIONÁRIO X3 (feito, exceto o passo 4 — ver abaixo)
 ------------------------------------------------------------------------

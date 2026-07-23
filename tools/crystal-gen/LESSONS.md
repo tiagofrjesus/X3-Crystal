@@ -132,6 +132,62 @@ embutido diretamente. Para reaproveitar um subreport já existente no `.rpt` (ex
 2. Gravar esse subreport para um `.rpt` temporário em disco.
 3. Chamar `ImportSubreportEx` com o caminho desse ficheiro temporário.
 
+### Este roundtrip NÃO preserva RecordSelectionFormula nem SubreportLinks — reatribuir manualmente
+
+Confirmado reproduzindo e corrigindo o bug em `TEB_PIECE.rpt` (2026-07-23, ERR 504 "Missing
+parameter values" em runtime real, `Job 5811`): criar um subreport novo por
+`GetSubreport()`→`SaveAs()`→`ImportSubreportEx()` (para reaproveitar um logótipo já embutido
+noutra secção) perde DUAS coisas em relação ao subreport original, e as DUAS têm de ser
+reatribuídas manualmente a seguir, ou o parâmetro fica "órfão" (declarado, `PromptToUser=True`,
+mas `UseCount=0`) e o motor Crystal .NET REAL (não o preview/validação local) falha com "Missing
+parameter values", mesmo que a validação estrutural (`Inspect-X3Report.ps1`) pareça OK:
+
+1. **`RecordFilter`/`RecordSelectionFormula` do subreport** — fica vazia (`[]`). A atribuição
+   DIRETA de propriedade (`subDoc.DataDefController.DataDefinition.RecordFilter.FreeEditingText =
+   texto;`) **NÃO PERSISTE** ao gravar (fica certa na sessão viva — confirma-se relendo antes do
+   `SaveAs` — mas volta a vazia depois de `SaveAs`+reload), o mesmo padrão "atribuição direta não
+   persiste" já documentado para `Left`/`Top` de `ReportObject`. A API que persiste de facto é o
+   controller dedicado, descoberto por reflexão sobre `ISCRDataDefController`:
+   ```csharp
+   subDoc.DataDefController.RecordFilterController.SetFormulaText(textoDaFormula);
+   ```
+   (`RecordFilterController` é do tipo `FilterController`/`ISCRFilterController`, que também expõe
+   `Modify(Filter NewFilter)`, `AddItem`, `ModifyItem` — `SetFormulaText` é o mais direto quando já
+   se tem o texto completo da fórmula de outro subreport equivalente.)
+
+2. **`SubreportLinks` do `SubreportObject`** (a colocação do subreport DENTRO do relatório
+   principal, não o subreport em si) — fica com 0 entradas. Um subreport original que partilha
+   parâmetro com o relatório principal (ex. `logo2`/`logo3`/`logo1` em `TEB_PIECE.rpt`, todos
+   recebendo `{?X3DOS}` do relatório principal) tem sempre exatamente 1
+   `SubreportLink` (`MainReportFieldName={?X3DOS}`, `SubreportFieldName={?X3DOS}`,
+   `LinkedParameterName={?X3DOS}`) no `SubreportObject` de colocação — é este link que faz o motor
+   de impressão real herdar o VALOR do parâmetro do relatório principal em vez de o pedir de novo.
+   Também aqui a atribuição direta não persiste — usar Clone+Modify (mesmo padrão de
+   "Reposicionar objetos existentes" acima):
+   ```csharp
+   var clone = (ISCRReportObject)subreportObj.Clone(true);
+   var srClone = (SubreportObject)clone;
+   var newLinks = new SubreportLinksClass();          // SEMPRE nova coleção, nunca reaproveitar
+   var lk = new SubreportLinkClass();
+   lk.MainReportFieldName = "{?X3DOS}";
+   lk.SubreportFieldName  = "{?X3DOS}";
+   lk.LinkedParameterName = "{?X3DOS}";
+   newLinks.Add(lk);
+   srClone.SubreportLinks = newLinks;
+   RCD.ReportDefController.ReportObjectController.Modify(subreportObj, clone);
+   ```
+
+**Diagnóstico/confirmação**: usar `ISCRParameterField` (via `typeof(ISCRParameterField).GetProperty
+("UseCount")` — reflexão sobre o TIPO da interface COMPILE-TIME, não `pf.GetType()`, que devolve
+`System.__ComObject` sem interfaces úteis para um RCW) para ler o `UseCount` do parâmetro dentro de
+cada subreport. Um subreport com `RecordFilter` a usar o parâmetro E `SubreportLinks` a ligá-lo ao
+principal mostra `UseCount=2`; só com o filtro (sem o link) mostra `UseCount=1`; sem nenhum dos
+dois, `UseCount=0` (órfão, é o estado quebrado). Comparar sempre com um subreport IRMÃO que já
+funciona (ex. `logo2` vs `logoHdr2` novo) em vez de adivinhar o valor esperado.
+
+Ver `tools/crystal-gen/X3RptFixSubFilter2.cs` + `tools/crystal-gen/Fix-PieceSubFilter.ps1` como
+exemplo completo validado (aplicado e confirmado com `Reports-TEB/TEB_PIECE.rpt`).
+
 ---
 
 ## Tabelas novas — SEMPRE nativas, nunca Command
