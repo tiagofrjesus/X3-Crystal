@@ -178,6 +178,72 @@
      API descoberta. Ferramentas: tools/crystal-gen/X3RptFixSubFilter2.cs
      + tools/crystal-gen/Fix-PieceSubFilter.ps1.
 
+  i) FIX CRÍTICO #2 (2026-07-28): depois do fix (h) acima ter sido testado
+     em PRODUÇÃO REAL via AIMP, o PDF resultante mostrou um bug diferente
+     e mais grave: as duas caixas do logótipo/selo no cabeçalho apareciam
+     como colunas muito altas a ocupar quase a página inteira, com a
+     MESMA imagem repetida/empilhada dezenas de vezes dentro da mesma
+     caixa, empurrando a tabela de detalhe para a página 2 e estragando
+     a paginação (documento passou a ter 3 páginas em vez do esperado).
+
+     INVESTIGAÇÃO: confirmou-se por diagnóstico read-only dedicado
+     (tools/crystal-gen/X3RptDiagLogo.cs + Diag-PieceLogoTables.ps1) que
+     o RecordFilter e os SubreportLinks de logoHdr2/logoHdr3 estavam
+     CORRETOS e IDÊNTICOS byte a byte aos de logo2/logo3 (fix (h) tinha
+     funcionado bem nesse aspeto) — ou seja, a causa deste 2º bug NÃO
+     tinha nada a ver com o fix (h).
+
+     CAUSA RAIZ REAL: a tabela ABLOB dentro de logoHdr2/logoHdr3 era uma
+     CommandTableClass com SQL SEM WHERE nenhum ("SELECT ... FROM
+     TEB.ABLOB"), em vez de uma tabela NATIVA (TableClass) como em
+     logo2/logo3 (ClassName=CrystalReports.Table nos originais vs
+     ClassName=CrystalReports.CommandTable nos novos — confirmado por
+     diagnóstico). Isto veio da ferramenta usada no passo (g)
+     (tools/crystal-gen/X3RptBuildLogoSub.cs), que construiu o .rpt
+     "carrier" a partir de um seed em branco e reconstruiu a tabela ABLOB
+     manualmente como Command (para contornar a falta de conectividade
+     desta máquina de dev ao DSN de produção ADX_CS_X3V7 — SetTableLocation
+     entre duas CommandTable não valida conectividade, ao contrário de
+     uma Table nativa). Um Command sem filtro na própria SQL devolve a
+     tabela ABLOB INTEIRA (todas as imagens/selos de todas as empresas)
+     ao motor de impressão, que tenta aplicar o RecordSelectionFormula
+     DEPOIS da query já ter devolvido tudo — no motor de impressão real
+     do AIMP essa filtragem pós-query sobre uma Command sem WHERE não
+     restringe fiavelmente a 1 registo, e a secção Detail do subreport
+     imprime uma vez por cada linha devolvida (dezenas), cada uma com a
+     mesma imagem, empilhadas verticalmente — exatamente o sintoma visto.
+
+     Esta é uma correção à lição registada anteriormente em LESSONS.md
+     ("ao testar localmente com ABLOB sem filtro, os subreports esticam-se
+     sem imagem — não reflete produção") — essa nota estava incompleta:
+     o MESMO tipo de sintoma (caixa esticada) PODE sim acontecer em
+     produção real, quando a causa é uma CommandTable sem filtro escondida
+     dentro do subreport, e não apenas um artefacto do ambiente de teste
+     local. Ver LESSONS.md, secção "Subreports de imagem (logo/selo) —
+     imagem empilhada/repetida..." (atualizada nesta sessão) para o
+     diagnóstico e fix completos.
+
+     FIX: SubreportController.SetTableLocation(subreportName,
+     oldCommandTable, newNativeTable) — substituição da CommandTable por
+     uma TableClass nativa genuína, construída com o DSN alcançável do
+     dev (TEST_TEB211) só para passar a validação de conectividade (o
+     DSN exato é irrelevante em produção porque o motor X3 remapeia
+     tabelas NATIVAS para o DSN do folder em runtime, independentemente
+     do DSN gravado). Credenciais limpas depois via
+     DatabaseController.ModifyTableConnectionInfo. RecordFilter e
+     SubreportLinks NÃO foram tocados (já estavam corretos).
+     Confirmado depois de SaveAs+reload: ClassName passou de
+     CrystalReports.CommandTable para CrystalReports.Table em
+     logoHdr2/logoHdr3, RecordFilter manteve-se idêntico a logo2/logo3,
+     SubreportLinks intactos, 0 credenciais gravadas no ficheiro final,
+     sem overlaps novos (diff estrutural via Inspect-X3Report.ps1 vazio
+     em relação à versão anterior, exceto o tipo de tabela interno aos
+     subreports, que esse inspector não verifica).
+     Ferramentas: tools/crystal-gen/X3RptFixLogoHdrTable.cs +
+     tools/crystal-gen/Fix-LogoHdrTable.ps1 (fix) e
+     tools/crystal-gen/X3RptDiagLogo.cs +
+     tools/crystal-gen/Diag-PieceLogoTables.ps1 (diagnóstico read-only).
+
 ------------------------------------------------------------------------
 3. REGISTO NO DICIONÁRIO X3 (feito, exceto o passo 4 — ver abaixo)
 ------------------------------------------------------------------------
