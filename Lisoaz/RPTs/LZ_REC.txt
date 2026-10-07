@@ -1,0 +1,38 @@
+﻿LZ_REC.rpt — Recibo de cliente (PAY) — Lisoaz
+======================================================================
+Origem: Reports-TEB\TEB_REC.rpt (TEB, já conforme LEG POR). Modelo certificado Sage de referência: P-RECIBO.
+Gerado por: tools\crystal-gen\Build-Lisoaz.ps1 (specs LZ_REC_port.json > LZ_common.json > LZ_REC_design.json).
+Campos certificados PT*/ATCUD/QR: inalterados (validado com Validate-LZ.ps1).
+
+REGISTO NO X3 DA LISOAZ (pasta LZPROTO)
+  AREPORT: criar o código LZ_REC copiando o registo TEB_REC da TEB (ou do standard P-RECIBO), com:
+    Ficheiro Crystal (CRYCOD) = LZ_REC   <- tem de ser EXATAMENTE o nome do .rpt
+    Descrição TEB: 100103 | Grupo: 10 | Módulo: 3 | Orientação: 1
+    Processo de inicialização (TRTINI) = PRECIBO   TRTSPE = ZRPDFPATH
+    NOTA: ZRPDFPATH = processo Megavale de envio direto por email. Manter se o processo for instalado na Lisoaz;
+    enquanto não estiver instalado, deixar TRTSPE vazio (o standard LZPROTO.AREPORT não tem TRTSPE).
+  AREPORTD (parâmetros, iguais aos do .rpt — o .rpt tem os mesmos parâmetros que o TEB):
+     1 numdeb           21353                      tipo=VCR lg=8.000 def=[[M:PAY0]NUM]..[[M:PAY0]NUM] ctl= 
+     2 impselection     21324                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+     3 impdetiva        51565                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+     4 numcopy          18184                      tipo=C lg=1.000 def=[2]..[ ] ctl= 
+     5 seqedt           1251                       tipo=L lg=8.000 def=[0]..[ ] ctl= 
+     6 usr              21456                      tipo=AUS lg=0.000 def=[GUSER]..[ ] ctl= 
+     7 etat             14037                      tipo=A lg=10.000 def=[[F:ARP]RPTCOD]..[ ] ctl= 
+     8 numedt           1143                       tipo=L lg=8.000 def=[ ]..[ ] ctl= 
+     9 sitedeb          21338                      tipo=FCY lg=0.000 def=[[M:PAY1]FCY]..[ ] ctl= 
+  AREPORTV (funções/valores por defeito):
+    GESPAY     numcopy          [1]..[ ]
+    GESPAY     numdeb           [[M:PAY0]NUM]..[[M:PAY0]NUM]
+  Associar o código LZ_REC ao(s) botão(ões)/destino de impressão do documento (GESARX/GESADI), como na TEB.
+
+DIFERENÇAS FACE AO TEB_REC
+  - Textos fixos (PT) passados para o menu local 6003 (TextOfChapter, POR/ENG). Criar as entradas no X3: Lisoaz\Menus_locais_LZ.xlsx
+    (enquanto não existirem, esses rótulos saem em branco).
+  - Idioma do documento = idioma do terceiro (BPARTNER.LAN_0): POR -> português, outro -> ENG (fórmula lzLan).
+  - Design Lisoaz: azul #1F5FA8 nos rótulos de colunas/tipo de documento; faixas cinza na grelha, barra de colunas e total; rodapé de contactos Lisoaz (fórmula lzContactos, texto no menu 6003).
+
+TABELAS X3 USADAS (principal)
+  PAYMENTH, PAYMENTD, BPADDRESS, FACILITY, BPADDRESS (BPADDRESS_FCY), TABCUR, BPARTNER, COMPANY, AREPORTM, AVWTEXTRA, TMPARPT, AREPORTM (AREPORTM_LIN), PORQRC, GACCENTRY, GACCDUDATE, TABPAYTYP, BANK, PAYMENTD (PAYMENTD_CUM)
+
+LOGÓTIPO: subreport de logo lê ABLOB (CODBLB = 'LOGO', IDENT1 = sociedade). Na Lisoaz carregar o logo na sociedade LZACM (ainda não existe em LZPROTO.ABLOB).

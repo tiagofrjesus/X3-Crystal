@@ -1,0 +1,22 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1. Idioma do documento = idioma do terceiro: POR se BPARTNER.LAN_0 = POR, senao ENG (formula lzLan). Aplica-se a lang_trad/P_lang_trad e as chamadas TextOfChapter/X3TranslatedText que usavam {?X3LAN} ou {BPARTNER.LAN_0}. So o relatorio principal; formulas PT_*/isPt*/atcud* nunca sao alteradas."
+    },
+    {
+        "op":  "formula",
+        "name":  "lzLan",
+        "text":  "if {BPARTNER.LAN_0} = \"POR\" then \"POR\" else \"ENG\""
+    },
+    {
+        "op":  "formulaReplace",
+        "mainOnly":  true,
+        "find":  "\\b((?:P_)?lang_trad)\\s*:=\\s*[^;]+;",
+        "replace":  "$1 := {@lzLan};"
+    },
+    {
+        "op":  "formulaReplace",
+        "mainOnly":  true,
+        "find":  "((?:TextOfChapter|X3TranslatedText)\\s*\\(\\s*[^,()]+,\\s*)(\\{\\?X3LAN\\}|\\{BPARTNER\\.LAN_0\\})(\\s*,)",
+        "replace":  "$1{@lzLan}$3"
+    }
+]

@@ -1,0 +1,102 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZDesign.ps1 -- nao editar a mao. Design Lisoaz uniforme: azul #1F5FA8, faixas #E7E6E6/#D0CECE; campos certificados PT*/ATCUD/QR intocados."
+    },
+    {
+        "op":  "theme",
+        "map":  {
+                    "#000400":  "#1F5FA8",
+                    "#330035":  "#1F5FA8"
+                },
+        "bold":  true
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection7",
+        "name":  "lzGridLbl",
+        "l":  315,
+        "t":  390,
+        "w":  7530,
+        "h":  300,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection7",
+        "name":  "lzGridDoc",
+        "l":  7845,
+        "t":  390,
+        "w":  2940,
+        "h":  585,
+        "bg":  "#D0CECE",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "set",
+        "name":  "Text24L",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "Number1",
+        "bold":  true,
+        "size":  9
+    },
+    {
+        "op":  "set",
+        "name":  "BPRNUM03",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "EECNUM04",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "TRNDAT03",
+        "bold":  true
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection2",
+        "name":  "lzColBar",
+        "l":  300,
+        "t":  30,
+        "w":  10740,
+        "h":  265,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "box",
+        "bordercolor":  "#7F7F7F"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzContactos",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 165) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 168)"
+    },
+    {
+        "op":  "sectionHeight",
+        "section":  "PageFooterSection1",
+        "h":  1290
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "lzContactosF",
+        "source":  "{@lzContactos}",
+        "type":  "string",
+        "l":  135,
+        "t":  1050,
+        "w":  10620,
+        "h":  220,
+        "font":  "Arial",
+        "size":  7,
+        "color":  "#1F5FA8",
+        "align":  "center"
+    }
+]

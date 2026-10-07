@@ -1,0 +1,488 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formulaReplace",
+        "mainOnly":  true,
+        "required":  true,
+        "formula":  "textofchapter",
+        "find":  "^\\s*WhilePrintingRecords\\s*;",
+        "replace":  "WhilePrintingRecords; shared stringVar lzDos := {?X3DOS}; shared stringVar lzLanS := {@lzLan};"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Texte34",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 117)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection2",
+        "name":  "Texte34L",
+        "source":  "{@lzT_Texte34}",
+        "type":  "string",
+        "l":  150,
+        "t":  45,
+        "w":  5370,
+        "h":  199,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Texte34"
+    },
+    {
+        "op":  "remove",
+        "name":  "Texte34"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Texte35",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 118)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection2",
+        "name":  "Texte35L",
+        "source":  "{@lzT_Texte35}",
+        "type":  "string",
+        "l":  5505,
+        "t":  45,
+        "w":  990,
+        "h":  199,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Texte35"
+    },
+    {
+        "op":  "remove",
+        "name":  "Texte35"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Texte37",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 120)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection2",
+        "name":  "Texte37L",
+        "source":  "{@lzT_Texte37}",
+        "type":  "string",
+        "l":  6570,
+        "t":  45,
+        "w":  1005,
+        "h":  199,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Texte37"
+    },
+    {
+        "op":  "remove",
+        "name":  "Texte37"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text5",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 122) + \": \" + {SINVOICED.SDHNUM_0}"
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection1",
+        "name":  "Text5L",
+        "source":  "{@lzT_Text5}",
+        "type":  "string",
+        "l":  255,
+        "t":  45,
+        "w":  2985,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text5"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text5"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text9",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 123) + \" : \" + ToText({SDELIVERY_1.SHIDAT_0}, \"dd-MM-yyyy\")"
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection1",
+        "name":  "Text9L",
+        "source":  "{@lzT_Text9}",
+        "type":  "string",
+        "l":  3285,
+        "t":  45,
+        "w":  3495,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text9"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text9"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text1",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 124) + \" :\""
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection4",
+        "name":  "Text1L",
+        "source":  "{@lzT_Text1}",
+        "type":  "string",
+        "l":  255,
+        "t":  30,
+        "w":  1524,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8.1,
+        "bold":  false,
+        "italic":  true,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text1"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text1"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text41",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 110)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection2",
+        "name":  "Text41L",
+        "source":  "{@lzT_Text41}",
+        "type":  "string",
+        "l":  150,
+        "t":  120,
+        "w":  1530,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text41"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text41"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text44",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 113)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection2",
+        "name":  "Text44L",
+        "source":  "{@lzT_Text44}",
+        "type":  "string",
+        "l":  150,
+        "t":  375,
+        "w":  930,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text44"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text44"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text45",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 112)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection2",
+        "name":  "Text45L",
+        "source":  "{@lzT_Text45}",
+        "type":  "string",
+        "l":  150,
+        "t":  630,
+        "w":  945,
+        "h":  255,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text45"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text45"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text31",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 105)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection8",
+        "name":  "Text31L",
+        "source":  "{@lzT_Text31}",
+        "type":  "string",
+        "l":  6091,
+        "t":  435,
+        "w":  5264,
+        "h":  226,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text31"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text31"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text35",
+        "text":  "\"_____/_____/_____\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 106)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection8",
+        "name":  "Text35L",
+        "source":  "{@lzT_Text35}",
+        "type":  "string",
+        "l":  6210,
+        "t":  675,
+        "w":  1879,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text35"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text35"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text36",
+        "text":  "\"_____________________________\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 107)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection8",
+        "name":  "Text36L",
+        "source":  "{@lzT_Text36}",
+        "type":  "string",
+        "l":  8265,
+        "t":  675,
+        "w":  3090,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text36"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text36"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text40",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 115) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 166)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection5",
+        "name":  "Text40L",
+        "source":  "{@lzT_Text40}",
+        "type":  "string",
+        "l":  255,
+        "t":  615,
+        "w":  11100,
+        "h":  255,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text40"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text40"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text11",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 154) + \" \" + TextOfChapter(lzDos, lzLanS, 6003, 167)",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection1",
+        "name":  "Text11L",
+        "source":  "{@lzT_Text11}",
+        "type":  "string",
+        "l":  120,
+        "t":  75,
+        "w":  10380,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text11",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text11",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text24",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; \"_____/_____/_____\" + Chr(13) + TextOfChapter(lzDos, lzLanS, 6003, 106)",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection1",
+        "name":  "Text24L",
+        "source":  "{@lzT_Text24}",
+        "type":  "string",
+        "l":  2865,
+        "t":  300,
+        "w":  1879,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text24",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text24",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text37",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; \"_____________________________\" + Chr(13) + TextOfChapter(lzDos, lzLanS, 6003, 107)",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "field",
+        "section":  "DetailSection1",
+        "name":  "Text37L",
+        "source":  "{@lzT_Text37}",
+        "type":  "string",
+        "l":  4875,
+        "t":  300,
+        "w":  3090,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text37",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text37",
+        "sub":  "Notacredit"
+    },
+    {
+        "op":  "formula",
+        "sub":  "SINVOICEV_TAXE.rpt - 01",
+        "name":  "lbl_taux",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 156)"
+    },
+    {
+        "op":  "formula",
+        "sub":  "SINVOICEV_TAXE.rpt - 01",
+        "name":  "lbl_baseTVA",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 162)"
+    },
+    {
+        "op":  "formula",
+        "sub":  "SINVOICEV_TAXE.rpt - 01",
+        "name":  "lbl_mtTVA",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 163)"
+    }
+]

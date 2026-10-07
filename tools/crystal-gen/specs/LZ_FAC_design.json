@@ -1,0 +1,168 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZDesign.ps1 -- nao editar a mao. Design Lisoaz uniforme: azul #1F5FA8, faixas #E7E6E6/#D0CECE; campos certificados PT*/ATCUD/QR intocados."
+    },
+    {
+        "op":  "theme",
+        "map":  {
+                    "#000400":  "#1F5FA8",
+                    "#330035":  "#1F5FA8"
+                },
+        "bold":  true
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection1",
+        "name":  "lzGridLbl",
+        "l":  165,
+        "t":  360,
+        "w":  7995,
+        "h":  300,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection1",
+        "name":  "lzGridDoc",
+        "l":  8160,
+        "t":  360,
+        "w":  3180,
+        "h":  585,
+        "bg":  "#D0CECE",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "set",
+        "name":  "lbltypefac1",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "piece2",
+        "bold":  true,
+        "size":  9
+    },
+    {
+        "op":  "set",
+        "name":  "clientCode1",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "ACCDAT02",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "txtppayment1",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "Texte34L",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "Texte35L",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "Texte36",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "Texte37L",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "gcolrem01",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "gcolrem11",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "gcolrem21",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "Champ51",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection2",
+        "name":  "lzColBar",
+        "l":  150,
+        "t":  20,
+        "w":  11205,
+        "h":  250,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "box",
+        "bordercolor":  "#7F7F7F"
+    },
+    {
+        "op":  "box",
+        "section":  "PageFooterSection2",
+        "name":  "lzTotBand",
+        "l":  7635,
+        "t":  1000,
+        "w":  3705,
+        "h":  265,
+        "bg":  "#D0CECE",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzContactos",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 165) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 168)"
+    },
+    {
+        "op":  "sectionHeight",
+        "section":  "PageFooterSection4",
+        "h":  1400
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection4",
+        "name":  "lzContactosF",
+        "source":  "{@lzContactos}",
+        "type":  "string",
+        "l":  135,
+        "t":  1160,
+        "w":  10620,
+        "h":  220,
+        "font":  "Arial",
+        "size":  7,
+        "color":  "#1F5FA8",
+        "align":  "center"
+    },
+    {
+        "op":  "sectionHeight",
+        "section":  "GroupHeaderSection2",
+        "h":  315,
+        "comment":  "repor altura original (seccao com campo certificado)"
+    }
+]

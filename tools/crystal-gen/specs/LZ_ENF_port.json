@@ -1,0 +1,39 @@
+﻿[
+    {
+        "comment":  "Port TEB_ENF -\u003e Lisoaz: ZDESCL_0 -\u003e ITMDES_0."
+    },
+    {
+        "name":  "ZDESCL03",
+        "op":  "remove"
+    },
+    {
+        "source":  "{PORDERP.ITMDES_0}",
+        "type":  "string",
+        "section":  "DetailSection14",
+        "w":  3480,
+        "t":  0,
+        "l":  1485,
+        "name":  "ITMDESLZ03",
+        "h":  210,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "ZDESCL01",
+        "op":  "remove"
+    },
+    {
+        "source":  "{PORDERP.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section19",
+        "w":  3615,
+        "t":  30,
+        "l":  1350,
+        "name":  "ITMDESLZ01",
+        "h":  210,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    }
+]

@@ -1,0 +1,92 @@
+#<AdxTL>
+###########################################################################################################
+# ZAIMP3 - script especifico do ponto de entrada do script standard AIMP3 (impressao de relatorios).
+#
+# Objetivo: o ficheiro gerado pela impressao ficar com o NUMERO DO DOCUMENTO no nome
+# (ex. "ODT-E012607-0002.pdf" em vez do nome do relatorio), para TODOS os relatorios configurados
+# abaixo, sem mexer em cada relatorio nem em scripts standard.
+#
+# Ponto de entrada PARAM do AIMP3: chamado antes de enviar o pedido ao servidor de impressao; permite
+# alterar qualquer parametro do array PARAMETRE(1..NBPAR) - aqui o "_ExportFile" (valores dos
+# parametros "_..." levam chr$(1) no inicio).
+#
+# INSTALACAO (X3):
+#  1. Criar este script ZAIMP3 (mesmo editor onde se criou o ZTRTJOULEG), gravar e compilar.
+#  2. GESAPE (Desenvolvimento > Dicionario de scripts > Scripts > Pontos de entrada):
+#     script standard "AIMP3" -> acrescentar o script especifico "ZAIMP3" e validar.
+#  3. Testar primeiro com ZDEBUG=1 (abaixo): aparecem janelas com o destino e os parametros, para
+#     confirmar o comportamento em pre-visualizacao / ficheiro / email. Depois por ZDEBUG=0.
+#
+# Para acrescentar outro relatorio: uma linha "When" em DOC_PARAM com o parametro que tem o numero.
+###########################################################################################################
+
+$ACTION
+Case ACTION
+ When "PARAM" : Gosub ZNOMEFICH
+Endcase
+Return
+
+###########################################################################################################
+$ZNOMEFICH
+Local Integer ZDEBUG : ZDEBUG = 1          # 1 = mostrar diagnostico (Infbox); 0 = silencioso
+Local Char    ZETAT(30), ZDEST(10), ZPDOC(30), ZDOC(80), ZDOCFIN(80), ZEXP(250), ZDIR(250), ZEXT(10), ZNOME(250)
+Local Integer ZI, ZK
+
+Call GETPARAM("X3ETA",NBPAR,PARAMETRE,ZETAT) From ETAT
+ZK = instr(1,ZETAT,".") : If ZK : ZETAT = left$(ZETAT,ZK-1) : Endif
+
+# Parametro do relatorio que tem o numero do documento (intervalo deb/fin com o mesmo valor = 1 doc)
+Gosub DOC_PARAM
+If ZPDOC = "" : Return : Endif
+
+Call GETPARAM("__DESTINATION",NBPAR,PARAMETRE,ZDEST) From ETAT
+Call GETPARAM(ZPDOC+"deb",NBPAR,PARAMETRE,ZDOC) From ETAT
+Call GETPARAM(ZPDOC+"fin",NBPAR,PARAMETRE,ZDOCFIN) From ETAT
+
+# _ExportFile atual (pode nao existir em pre-visualizacao)
+ZEXP = ""
+For ZI = 1 To NBPAR
+ If left$(PARAMETRE(ZI),12) = "_ExportFile="
+  ZEXP = mid$(PARAMETRE(ZI),13,250)
+  If left$(ZEXP,1) = chr$(1) : ZEXP = mid$(ZEXP,2,250) : Endif
+ Endif
+Next ZI
+
+If ZDEBUG
+ Infbox "ZAIMP3 PARAM - relatorio=[" + ZETAT + "] destino=[" + ZDEST + "] doc=[" + ZDOC + "] fin=[" + ZDOCFIN + "] _ExportFile=[" + ZEXP + "]"
+Endif
+
+# So 1 documento (deb = fin) e numero preenchido
+If ZDOC = "" | ZDOC <> ZDOCFIN : Return : Endif
+
+# Nome seguro para ficheiro: "/" "\" ":" "*" "?" espacos -> "-"
+ZNOME = ZDOC
+ZNOME = ctrans(ZNOME, "/\:*?<>| ", "---------")
+
+If ZEXP <> ""
+ # Ja ha caminho de exportacao (destino ficheiro/email): manter pasta e extensao, trocar so o nome
+ ZDIR = "" : ZEXT = ""
+ For ZI = len(ZEXP) To 1 Step -1
+  If mid$(ZEXP,ZI,1) = "\" | mid$(ZEXP,ZI,1) = "/" : ZDIR = left$(ZEXP,ZI) : Break : Endif
+ Next ZI
+ ZK = 0
+ For ZI = len(ZEXP) To 1 Step -1
+  If mid$(ZEXP,ZI,1) = "." : ZK = ZI : Break : Endif
+  If mid$(ZEXP,ZI,1) = "\" | mid$(ZEXP,ZI,1) = "/" : Break : Endif
+ Next ZI
+ If ZK : ZEXT = mid$(ZEXP,ZK,10) : Endif
+ ZEXP = ZDIR + ZNOME + ZEXT
+ Call SETPARAM("_ExportFile",NBPAR,PARAMETRE,chr$(1)+ZEXP) From ETAT
+ If ZDEBUG : Infbox "ZAIMP3 - novo _ExportFile=[" + ZEXP + "]" : Endif
+Endif
+Return
+
+###########################################################################################################
+# Relatorio -> prefixo do parametro com o numero do documento (sem deb/fin)
+$DOC_PARAM
+ZPDOC = ""
+Case ZETAT
+ When "TEB_PIECE", "PIECE" : ZPDOC = "pce"      # pcedeb / pcefin
+ When "TEB_REC"            : ZPDOC = "num"      # numdeb / numfin
+Endcase
+Return

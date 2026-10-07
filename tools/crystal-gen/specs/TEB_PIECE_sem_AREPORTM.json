@@ -1,0 +1,6 @@
+[
+  {"comment": "TEB_PIECE deixa de depender da chave de impressao AREPORTM (gravada pelo processo de inicializacao TRTJOULEG/ZTRTJOULEG, que no X3 nao estava a ser chamado para o codigo TEB_PIECE). A AREPORTM so servia para chegar ao GJOURNAL (diario+referencial) e filtrar pelo pedido (numedt). GJOURNAL.JOU_0 e unico (65 diarios, todos LEG=POR) -> liga-se direto ao GACCENTRY. Filtros por parametros e seguranca (AFCTFCY/ACCES) mantem-se."},
+  {"op": "removeTable", "alias": "AREPORTM"},
+  {"op": "addLink", "from": "GACCENTRY", "to": "GJOURNAL", "fromFields": ["JOU_0"], "toFields": ["JOU_0"], "join": "equal"},
+  {"op": "selection", "text": "{GACCENTRY.FCY_0} in {?sitedeb} to {?sitefin} and {GACCENTRY.CPY_0} = {?societe} and {GACCENTRY.TYP_0} in {?typpcedeb} to {?typpcefin} and {GACCENTRY.NUM_0} in {?pcedeb} to {?pcefin} and {GACCENTRY.ACCDAT_0} in {?datedeb} to {?datefin} and {AFCTFCY.FNC_0} = {?X3FCT} and {AFCTFCY.PRFCOD_0} = {?X3PRF} and {ACCES.USR_0} = {?X3USR} and {ACCES.CONSUL_0} = 2 and ({GACCENTRYD.LEDTYP_0} = {?referentiel} or {?touref})"}
+]

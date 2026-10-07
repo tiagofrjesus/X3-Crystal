@@ -1,0 +1,39 @@
+﻿[
+    {
+        "comment":  "Port TEB_ORC -\u003e Lisoaz: ZDESCL_0 (descricao longa custom TEB) substituido por ITMDES_0 standard."
+    },
+    {
+        "name":  "ZDESCL01",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SQUOTED.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section19",
+        "w":  4005,
+        "t":  0,
+        "l":  1320,
+        "name":  "ITMDESLZ01",
+        "h":  225,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "ZDESCL02",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SQUOTED.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section21",
+        "w":  4050,
+        "t":  0,
+        "l":  1515,
+        "name":  "ITMDESLZ02",
+        "h":  225,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    }
+]

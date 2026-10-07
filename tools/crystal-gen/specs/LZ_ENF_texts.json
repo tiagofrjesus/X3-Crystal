@@ -1,0 +1,33 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text1",
+        "text":  "\" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 121)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection10",
+        "name":  "Text1L",
+        "source":  "{@lzT_Text1}",
+        "type":  "string",
+        "l":  6465,
+        "t":  75,
+        "w":  945,
+        "h":  228,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text1"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text1"
+    }
+]

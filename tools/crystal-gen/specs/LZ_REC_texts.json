@@ -1,0 +1,793 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formulaReplace",
+        "mainOnly":  true,
+        "required":  true,
+        "formula":  "textofchapter",
+        "find":  "^\\s*WhilePrintingRecords\\s*;",
+        "replace":  "WhilePrintingRecords; shared stringVar lzDos := {?X3DOS}; shared stringVar lzLanS := {@lzLan};"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text1",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 125)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text1L",
+        "source":  "{@lzT_Text1}",
+        "type":  "string",
+        "l":  8395,
+        "t":  390,
+        "w":  2135,
+        "h":  204,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text1"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text1"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text7",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 126)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text7L",
+        "source":  "{@lzT_Text7}",
+        "type":  "string",
+        "l":  5385,
+        "t":  390,
+        "w":  1390,
+        "h":  204,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text7"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text7"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text11",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 127)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text11L",
+        "source":  "{@lzT_Text11}",
+        "type":  "string",
+        "l":  6810,
+        "t":  390,
+        "w":  1534,
+        "h":  204,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text11"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text11"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text31",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 128) + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 129) + \" \" + {@desc}"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text31L",
+        "source":  "{@lzT_Text31}",
+        "type":  "string",
+        "l":  360,
+        "t":  120,
+        "w":  9854,
+        "h":  450,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text31"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text31"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text34",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 131)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text34L",
+        "source":  "{@lzT_Text34}",
+        "type":  "string",
+        "l":  360,
+        "t":  1590,
+        "w":  1260,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text34"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text34"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text25",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 97)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text25L",
+        "source":  "{@lzT_Text25}",
+        "type":  "string",
+        "l":  9427,
+        "t":  1590,
+        "w":  1103,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "right",
+        "copyFormatFrom":  "Text25"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text25"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text35",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 132)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text35L",
+        "source":  "{@lzT_Text35}",
+        "type":  "string",
+        "l":  4800,
+        "t":  1590,
+        "w":  1680,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "right",
+        "copyFormatFrom":  "Text35"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text35"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text33",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 133)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text33L",
+        "source":  "{@lzT_Text33}",
+        "type":  "string",
+        "l":  1710,
+        "t":  1590,
+        "w":  1905,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text33"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text33"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text8",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 134)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text8L",
+        "source":  "{@lzT_Text8}",
+        "type":  "string",
+        "l":  8775,
+        "t":  1590,
+        "w":  600,
+        "h":  240,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "right",
+        "copyFormatFrom":  "Text8"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text8"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text4",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 135)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text4L",
+        "source":  "{@lzT_Text4}",
+        "type":  "string",
+        "l":  7815,
+        "t":  1605,
+        "w":  945,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text4"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text4"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text5",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 136)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text5L",
+        "source":  "{@lzT_Text5}",
+        "type":  "string",
+        "l":  6510,
+        "t":  1605,
+        "w":  1290,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "center",
+        "copyFormatFrom":  "Text5"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text5"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text6",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 137)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection8",
+        "name":  "Text6L",
+        "source":  "{@lzT_Text6}",
+        "type":  "string",
+        "l":  3699,
+        "t":  1590,
+        "w":  1446,
+        "h":  226,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "center",
+        "copyFormatFrom":  "Text6"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text6"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text37",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 139)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text37L",
+        "source":  "{@lzT_Text37}",
+        "type":  "string",
+        "l":  5850,
+        "t":  510,
+        "w":  2040,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text37"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text37"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text38",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 140)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text38L",
+        "source":  "{@lzT_Text38}",
+        "type":  "string",
+        "l":  5850,
+        "t":  870,
+        "w":  2040,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text38"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text38"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text39",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 141)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text39L",
+        "source":  "{@lzT_Text39}",
+        "type":  "string",
+        "l":  5850,
+        "t":  1350,
+        "w":  2040,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text39"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text39"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text40",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 143)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text40L",
+        "source":  "{@lzT_Text40}",
+        "type":  "string",
+        "l":  5835,
+        "t":  195,
+        "w":  946,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text40"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text40"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text43",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 144)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text43L",
+        "source":  "{@lzT_Text43}",
+        "type":  "string",
+        "l":  360,
+        "t":  1920,
+        "w":  10320,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text43"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text43"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text9",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 142)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text9L",
+        "source":  "{@lzT_Text9}",
+        "type":  "string",
+        "l":  5850,
+        "t":  1110,
+        "w":  2040,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text9"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text9"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text3",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 145)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text3L",
+        "source":  "{@lzT_Text3}",
+        "type":  "string",
+        "l":  1995,
+        "t":  765,
+        "w":  1170,
+        "h":  210,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text3"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text3"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text12",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 155)",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text12L",
+        "source":  "{@lzT_Text12}",
+        "type":  "string",
+        "l":  120,
+        "t":  0,
+        "w":  2640,
+        "h":  240,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text12",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text12",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text9",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 156)",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text9L",
+        "source":  "{@lzT_Text9}",
+        "type":  "string",
+        "l":  120,
+        "t":  240,
+        "w":  720,
+        "h":  240,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Text9",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text9",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text10",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 157)",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text10L",
+        "source":  "{@lzT_Text10}",
+        "type":  "string",
+        "l":  840,
+        "t":  240,
+        "w":  1920,
+        "h":  240,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Text10",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text10",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text11",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 158)",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text11L",
+        "source":  "{@lzT_Text11}",
+        "type":  "string",
+        "l":  2760,
+        "t":  240,
+        "w":  1200,
+        "h":  240,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Text11",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text11",
+        "sub":  "IVA"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text5",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 159)",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text5L",
+        "source":  "{@lzT_Text5}",
+        "type":  "string",
+        "l":  5040,
+        "t":  30,
+        "w":  1440,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#FFFFFF",
+        "align":  "right",
+        "copyFormatFrom":  "Text5",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text5",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text1",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 156)",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text1L",
+        "source":  "{@lzT_Text1}",
+        "type":  "string",
+        "l":  120,
+        "t":  30,
+        "w":  840,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#FFFFFF",
+        "align":  "left",
+        "copyFormatFrom":  "Text1",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text1",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text9",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 160)",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text9L",
+        "source":  "{@lzT_Text9}",
+        "type":  "string",
+        "l":  1800,
+        "t":  30,
+        "w":  1920,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#FFFFFF",
+        "align":  "right",
+        "copyFormatFrom":  "Text9",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text9",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text10",
+        "text":  "WhilePrintingRecords; shared stringVar lzDos; shared stringVar lzLanS; TextOfChapter(lzDos, lzLanS, 6003, 161)",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "field",
+        "section":  "ReportHeaderSection2",
+        "name":  "Text10L",
+        "source":  "{@lzT_Text10}",
+        "type":  "string",
+        "l":  3840,
+        "t":  30,
+        "w":  1080,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#FFFFFF",
+        "align":  "right",
+        "copyFormatFrom":  "Text10",
+        "sub":  "IVAC"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text10",
+        "sub":  "IVAC"
+    }
+]

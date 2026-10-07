@@ -1,0 +1,43 @@
+﻿[
+    {
+        "comment":  "Port TEB_GRC -\u003e Lisoaz: ZDESCL_0 -\u003e ITMDES_0. (A formula certificada {@SelItmDes} do BONLIV2 devolve ITMDES_0 quando ITMMASTER.SELITMDES=0 -- caso de todos os artigos; a TEB removeu as tabelas AVWTEXTRA_DES2/3 de que ela depende.) SDELIVERY.SDHVREF_0 (custom TEB) removido."
+    },
+    {
+        "name":  "ZDESCL02",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SDELIVERYD.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section17",
+        "w":  3990,
+        "t":  0,
+        "l":  1290,
+        "name":  "ITMDESLZ02",
+        "h":  240,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "ZDESCL01",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SDELIVERYD.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section19",
+        "w":  3960,
+        "t":  0,
+        "l":  1305,
+        "name":  "ITMDESLZ01",
+        "h":  240,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "Text3",
+        "op":  "remove"
+    }
+]

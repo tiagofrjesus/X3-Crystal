@@ -1,0 +1,40 @@
+﻿LZ_GT.rpt — Nota / guia de transporte (TNH) — Lisoaz
+======================================================================
+Origem: Reports-TEB\TEB_GT.rpt (TEB, já conforme LEG POR). Modelo certificado Sage de referência: TRNNTE.
+Gerado por: tools\crystal-gen\Build-Lisoaz.ps1 (specs LZ_GT_port.json > LZ_common.json > LZ_GT_design.json).
+Campos certificados PT*/ATCUD/QR: inalterados (validado com Validate-LZ.ps1).
+
+REGISTO NO X3 DA LISOAZ (pasta LZPROTO)
+  AREPORT: criar o código LZ_GT copiando o registo TEB_GT da TEB (ou do standard TRNNTE), com:
+    Ficheiro Crystal (CRYCOD) = LZ_GT   <- tem de ser EXATAMENTE o nome do .rpt
+    Descrição TEB: 52718 | Grupo: 6 | Módulo: 9 | Orientação: 1
+    Processo de inicialização (TRTINI) = TRNNTE   TRTSPE =  
+  AREPORTD (parâmetros, iguais aos do .rpt — o .rpt tem os mesmos parâmetros que o TEB):
+     1 tnhnumdeb        52718                      tipo=VCR lg=0.000 def=[ ]..[ ] ctl= 
+     2 sitedeb          21338                      tipo=FCY lg=0.000 def=[ ]..[ ] ctl= 
+     3 bprdeb           21359                      tipo=BPR lg=0.000 def=[[F:BPR]BPRNUM]..[[F:BPR]BPRNUM] ctl= 
+     4 datedeb          21333                      tipo=D lg=0.000 def=[date$]..[date$] ctl= 
+     5 impselections    21324                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+     6 usr              21456                      tipo=AUS lg=0.000 def=[GUSER]..[ ] ctl= 
+     7 etat             14037                      tipo=A lg=10.000 def=[[F:ARP]RPTCOD]..[ ] ctl= 
+     8 numedt           1143                       tipo=L lg=8.000 def=[ ]..[ ] ctl= 
+     9 seqedt           1251                       tipo=L lg=8.000 def=[0]..[ ] ctl= 
+  AREPORTV (funções/valores por defeito):
+    GESTNH     bprdeb           [[M:TNH0]BPRNUM]..[[M:TNH0]BPRNUM]
+    GESTNH     datedeb          [[M:TNH0]TRNDAT]..[[M:TNH0]TRNDAT]
+    GESTNH     impselections    [ ]..[ ]
+    GESTNH     sitedeb          [[M:TNH0]FCY]..[[M:TNH0]FCY]
+    GESTNH     tnhnumdeb        [[M:TNH0]TNHNUM]..[[M:TNH0]TNHNUM]
+  Associar o código LZ_GT ao(s) botão(ões)/destino de impressão do documento (GESARX/GESADI), como na TEB.
+
+DIFERENÇAS FACE AO TEB_GT
+  - ZDESCL_0 -> ITMDES_0
+  - Textos fixos (PT) passados para o menu local 6003 (TextOfChapter, POR/ENG). Criar as entradas no X3: Lisoaz\Menus_locais_LZ.xlsx
+    (enquanto não existirem, esses rótulos saem em branco).
+  - Idioma do documento = idioma do terceiro (BPARTNER.LAN_0): POR -> português, outro -> ENG (fórmula lzLan).
+  - Design Lisoaz: azul #1F5FA8 nos rótulos de colunas/tipo de documento; faixas cinza na grelha, barra de colunas e total; rodapé de contactos Lisoaz (fórmula lzContactos, texto no menu 6003).
+
+TABELAS X3 USADAS (principal)
+  BPADDRESS, BPADDRESS (BPADDRESS_FCY), BPARTNER, COMPANY, FACILITY, TRANNOTEH, TRANNOTED, TEXCLOB (TEXCLOB_HEA), TEXCLOB (TEXCLOB_FTR), AREPORTM, TMPCRPT, PORQRC, AUTILIS
+
+LOGÓTIPO: subreport de logo lê ABLOB (CODBLB = 'LOGO', IDENT1 = sociedade). Na Lisoaz carregar o logo na sociedade LZACM (ainda não existe em LZPROTO.ABLOB).

@@ -1,0 +1,292 @@
+#<AdxTL>@(#)0.0.0.0 $Revision$
+###########################################################################################################
+# ZLZMEN6003 - Cria / atualiza o menu local 6003 (textos dos relatorios LZ_* da Lisoaz) em POR e ENG.
+#
+# GERADO por tools/crystal-gen/Gen-LZMenuSrc.ps1 a partir de tools/crystal-gen/specs/LZ_menus_6003.json
+# (o mesmo registo usado pelos RPT LZ_* e por Lisoaz/Menus_locais_LZ.xlsx) -- nao editar a mao.
+#
+# Como executar (pasta LZPROTO, utilizador com acesso ao dicionario):
+#   1. Desenvolvimento > Utilitarios > Diversos > Executar tratamentos (EXETRT) -> tratamento ZLZMEN6003
+#   2. Desenvolvimento > Utilitarios > Dicionario > Atualizacao menus locais (GENMENULOC) -> POR e ENG
+#      (sem este passo os textos novos so aparecem depois da proxima atualizacao do dicionario)
+#
+# Idempotente: cria o que falta e atualiza os textos que mudaram (so LANCHP = 6003). Nao apaga nada.
+# Tudo numa transacao: se houver algum erro de escrita faz Rollback e nada fica gravado (ver o trace).
+# Cabecalho AMENLOC como na TEB (modulo 9; alteravel=Nao; menu local=Sim; nao traduzir=Nao), especifico=Sim.
+# Codigo de atividade em WACT: vazio, porque a atividade XMEGA (Megavale) nao existe na Lisoaz; se for
+# criada, preencher WACT = "XMEGA" e voltar a executar.
+# APLSTD.LANMES e A(123): textos maiores ja vem divididos em duas entradas (ver "continuacao" no Excel).
+###########################################################################################################
+
+Local Integer WCHP : WCHP = 6003
+Local Char    WACT(10) : WACT = ""
+Local Integer NNEW, NUPD, NERR
+Local Integer WTRACE : WTRACE = 0
+
+If GTRACE = ""
+  WTRACE = 1
+  Call OUVRE_TRACE("Menu local 6003 - relatorios Lisoaz") From LECFIC
+Endif
+Call ECR_TRACE("Menu local " + num$(WCHP) + " - inicio", -2) From GESECRAN
+
+If clalev([F:AML]) = 0 : Local File AMENLOC [AML] : Endif
+If clalev([F:AST]) = 0 : Local File APLSTD [AST] : Endif
+
+Trbegin [AML],[AST]
+
+# ---------------------------------------------------------------- cabecalho do menu local (AMENLOC)
+Read [F:AML]MENLOC = WCHP
+If fstat
+  Raz [F:AML]
+  [F:AML]MENLOC   = WCHP
+  [F:AML]MODULE   = 9
+  [F:AML]CODACT   = WACT
+  [F:AML]AUZMOD   = 1
+  [F:AML]MENLOCAL = 2
+  [F:AML]SPECIF   = 2
+  [F:AML]NONTRA   = 1
+  [F:AML]CREDAT   = date$
+  [F:AML]CREUSR   = GUSER
+  Write [F:AML]
+  If fstat
+    NERR += 1
+    Call ECR_TRACE("Erro a criar AMENLOC " + num$(WCHP) + " (fstat=" + num$(fstat) + ")", 1) From GESECRAN
+  Else
+    Call ECR_TRACE("AMENLOC " + num$(WCHP) + " criado", -1) From GESECRAN
+  Endif
+Else
+  Call ECR_TRACE("AMENLOC " + num$(WCHP) + " ja existe (mantido)", 0) From GESECRAN
+Endif
+
+# ---------------------------------------------------------------- textos (APLSTD): numero, lingua, texto, lingua original
+Call GRAVA(WCHP,0,"POR","Lisoaz - textos dos relatorios LZ_*","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,0,"ENG","Lisoaz - LZ_* report texts","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,59,"POR","Documento de utilização puramente interna","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,59,"ENG","For internal use only","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,85,"POR","Desc. Cabeçalho","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,85,"ENG","Header discount","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,86,"POR","Desconto Linhas","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,86,"ENG","Line discount","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,90,"POR","Exmo.(s) Senhor(es)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,90,"ENG","Dear Sir/Madam","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,91,"POR","V/Número:","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,91,"ENG","Your ref.:","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,92,"POR","Emitido por:","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,92,"ENG","Issued by:","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,93,"POR","Nº Contribuinte","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,93,"ENG","VAT No.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,94,"POR","Modo/Cond. Pagamento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,94,"ENG","Payment terms","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,95,"POR","IVA","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,95,"ENG","VAT","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,96,"POR","Transporte","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,96,"ENG","Transport","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,97,"POR","Descontos","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,97,"ENG","Discounts","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,98,"POR","Este documento não constitui documento de transporte, nos termos do Decreto-Lei nº 147/2003","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,98,"ENG","This document is not a transport document under Decree-Law no. 147/2003","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,99,"POR","- Sociedade por quotas - Cons. Reg. Com. de Oliveira de Azeméis, matrícula nº 2272","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,99,"ENG","- Private limited company - Commercial Registry of Oliveira de Azeméis, no. 2272","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,101,"POR","Comercial:","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,101,"ENG","Sales rep.:","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,102,"POR","NIF","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,102,"ENG","VAT No.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,103,"POR","Declaro que separei os artigos constantes neste documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,103,"ENG","I declare that I have picked the items listed in this document","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,104,"POR","Declaro que conferi os artigos constantes neste documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,104,"ENG","I declare that I have checked the items listed in this document","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,105,"POR","Declaro que recebi e conferi os artigos constantes neste documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,105,"ENG","I declare that I have received and checked the items listed in this document","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,106,"POR","Data","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,106,"ENG","Date","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,107,"POR","Assinatura","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,107,"ENG","Signature","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,108,"POR","Assinatura (Motorista)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,108,"ENG","Signature (Driver)","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,109,"POR","Data Carga","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,109,"ENG","Loading date","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,110,"POR","Data/Hora Carga","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,110,"ENG","Loading date/time","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,111,"POR","Hora Carga","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,111,"ENG","Loading time","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,112,"POR","Descarga","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,112,"ENG","Unloading","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,113,"POR","Matrícula","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,113,"ENG","Licence plate","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,114,"POR","Matrícula reboque","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,114,"ENG","Trailer plate","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,115,"POR","Os artigos e/ou serviços constantes deste documento foram colocados à disposição do","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,115,"ENG","The goods and/or services in this document were made available to the buyer on its","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,116,"POR","«Chamada para rede fixa nacional»","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,116,"ENG","«Call to a national landline»","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,117,"POR","Artigo","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,117,"ENG","Item","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,118,"POR","Qtd.","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,118,"ENG","Qty.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,119,"POR","Quantidade","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,119,"ENG","Quantity","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,120,"POR","Preço","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,120,"ENG","Price","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,121,"POR","P.U. s/IVA","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,121,"ENG","Unit price excl. VAT","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,122,"POR","Exped. nr.","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,122,"ENG","Delivery no.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,123,"POR","Expedida em","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,123,"ENG","Shipped on","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,124,"POR","Fat. origem","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,124,"ENG","Original invoice","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,125,"POR","Recibo","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,125,"ENG","Receipt","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,126,"POR","Tipo de Pag.","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,126,"ENG","Payment type","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,127,"POR","Banco","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,127,"ENG","Bank","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,128,"POR","Exmos. Senhores,","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,128,"ENG","Dear Sirs,","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,129,"POR","Recebemos para liquidação do(s) documento(s) abaixo mencionados no valor de","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,129,"ENG","We have received, in settlement of the document(s) listed below, the amount of","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,130,"POR","Vimos por este meio informar que procedemos à liquidação dos documentos abaixo mencionados","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,130,"ENG","We hereby inform you that we have settled the documents listed below","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,131,"POR","Descrição","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,131,"ENG","Description","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,132,"POR","Valor Documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,132,"ENG","Document amount","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,133,"POR","Nº do Documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,133,"ENG","Document no.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,134,"POR","Divisa","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,134,"ENG","Currency","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,135,"POR","Valor Pendente","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,135,"ENG","Outstanding","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,136,"POR","Valor Pago","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,136,"ENG","Amount paid","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,137,"POR","Data do Doc.","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,137,"ENG","Document date","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,138,"POR","Data de Doc.","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,138,"ENG","Document date","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,139,"POR","Total liquidado em","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,139,"ENG","Total settled in","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,140,"POR","Total descontos em","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,140,"ENG","Total discounts in","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,141,"POR","Valor recebido em","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,141,"ENG","Amount received in","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,142,"POR","Total de retenções em","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,142,"ENG","Total withholdings in","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,143,"POR","TOTAIS","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,143,"ENG","TOTALS","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,144,"POR","Para efeitos de IVA, solicitamos a devolução deste(s) documento(s) devidamente assinado","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,144,"ENG","For VAT purposes, please return this document duly signed","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,145,"POR","A Gerência","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,145,"ENG","The Management","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,146,"POR","Original","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,146,"ENG","Original","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,147,"POR","Código fornecedor","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,147,"ENG","Supplier code","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,148,"POR","Valor Liquidado","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,148,"ENG","Amount settled","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,149,"POR","Vosso Documento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,149,"ENG","Your document","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,150,"POR","Notificação de Pagamento","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,150,"ENG","Payment notification","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,151,"POR","Documento processado por computador","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,151,"ENG","Computer-processed document","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,152,"POR","Guia de Transporte","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,152,"ENG","Transport note","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,153,"POR","Cliente","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,153,"ENG","Customer","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,154,"POR","Agradecemos que nos comprovem a recepção da Nota de Crédito através da devolução do respetivo","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,154,"ENG","Please confirm receipt of this Credit Note by returning the duplicate stamped and","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,155,"POR","TOTAL IVA - Valores em EUR","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,155,"ENG","VAT TOTAL - Amounts in EUR","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,156,"POR","Taxa","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,156,"ENG","Rate","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,157,"POR","Base","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,157,"ENG","Base","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,158,"POR","Mt. taxa","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,158,"ENG","Tax amt.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,159,"POR","Total (EUR)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,159,"ENG","Total (EUR)","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,160,"POR","Base (EUR)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,160,"ENG","Base (EUR)","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,161,"POR","Mt. taxa (EUR)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,161,"ENG","Tax amt. (EUR)","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,162,"POR","Incidência","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,162,"ENG","Taxable amount","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,163,"POR","Imposto","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,163,"ENG","Tax","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,164,"POR","NIPC","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,164,"ENG","Company reg. no.","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,165,"POR","Zona Industrial das Lameiradas, Lote Nº 5 • 4540-423 Mansores - Arouca  •  lisoaz@lisoaz.com  •","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,165,"ENG","Zona Industrial das Lameiradas, Lote Nº 5 • 4540-423 Mansores - Arouca  •  lisoaz@lisoaz.com  •","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,166,"POR","adquirente na mesma, ou na data da Guia Remessa","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,166,"ENG","date or on the date of the delivery note","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,167,"POR","duplicado carimbado e assinado, nº 5 do art.º 78º do CIVA","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,167,"ENG","signed (art. 78(5) of the Portuguese VAT Code)","POR",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,168,"POR","www.lisoaz.com  •  Tel. (+351) 256 920 030 (chamada para rede fixa nacional)","",NNEW,NUPD,NERR)
+Call GRAVA(WCHP,168,"ENG","www.lisoaz.com  •  Tel. (+351) 256 920 030 (call to a national landline)","POR",NNEW,NUPD,NERR)
+
+If NERR = 0
+  Commit
+  Call ECR_TRACE("Concluido: " + num$(NNEW) + " texto(s) criados, " + num$(NUPD) + " atualizados", -2) From GESECRAN
+  Call ECR_TRACE("Falta: Atualizacao menus locais (GENMENULOC) para POR e ENG", -1) From GESECRAN
+Else
+  Rollback
+  Call ECR_TRACE(num$(NERR) + " erro(s): transacao anulada, nada foi gravado", 1) From GESECRAN
+Endif
+
+If WTRACE = 1
+  Call FERME_TRACE From LECFIC
+  Call LEC_TRACE From LECFIC
+Endif
+End
+
+###########################################################################################################
+# GRAVA - cria ou atualiza uma linha de APLSTD (chave CLE = LANCHP;LANNUM;LAN). Chamado dentro da transacao.
+###########################################################################################################
+Subprog GRAVA(WCHP, WNUM, WLAN, WTXT, WORI, NNEW, NUPD, NERR)
+Value Integer WCHP
+Value Integer WNUM
+Value Char WLAN()
+Value Char WTXT()
+Value Char WORI()
+Variable Integer NNEW
+Variable Integer NUPD
+Variable Integer NERR
+
+If clalev([F:AST]) = 0 : Local File APLSTD [AST] : Endif
+
+Readlock [F:AST]CLE = WCHP ; WNUM ; WLAN
+If fstat = 0
+  If [F:AST]LANMES <> WTXT
+    [F:AST]LANMES = WTXT
+    [F:AST]UPDDAT = date$
+    [F:AST]UPDUSR = GUSER
+    Rewrite [F:AST]
+    If fstat
+      NERR += 1
+      Call ECR_TRACE("Erro a atualizar " + num$(WCHP) + "/" + num$(WNUM) + " " + WLAN + " (fstat=" + num$(fstat) + ")", 1) From GESECRAN
+    Else
+      NUPD += 1
+      Call ECR_TRACE("Atualizado " + num$(WNUM) + " " + WLAN + ": " + WTXT, 0) From GESECRAN
+    Endif
+  Endif
+Elsif fstat = 1
+  NERR += 1
+  Call ECR_TRACE("Linha bloqueada " + num$(WCHP) + "/" + num$(WNUM) + " " + WLAN, 1) From GESECRAN
+Else
+  Raz [F:AST]
+  [F:AST]LANCHP = WCHP
+  [F:AST]LANNUM = WNUM
+  [F:AST]LAN    = WLAN
+  [F:AST]LANMES = WTXT
+  [F:AST]LANORI = WORI
+  [F:AST]CREDAT = date$
+  [F:AST]CREUSR = GUSER
+  Write [F:AST]
+  If fstat
+    NERR += 1
+    Call ECR_TRACE("Erro a criar " + num$(WCHP) + "/" + num$(WNUM) + " " + WLAN + " (fstat=" + num$(fstat) + ")", 1) From GESECRAN
+  Else
+    NNEW += 1
+  Endif
+Endif
+End

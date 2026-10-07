@@ -1,0 +1,453 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text3",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 146)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection2",
+        "name":  "Text3L",
+        "source":  "{@lzT_Text3}",
+        "type":  "string",
+        "l":  8715,
+        "t":  120,
+        "w":  1725,
+        "h":  240,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Text3"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text3"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text29",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 147) + \":\""
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text29L",
+        "source":  "{@lzT_Text29}",
+        "type":  "string",
+        "l":  405,
+        "t":  645,
+        "w":  1800,
+        "h":  225,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text29"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text29"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text30",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 106) + \":\""
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text30L",
+        "source":  "{@lzT_Text30}",
+        "type":  "string",
+        "l":  5430,
+        "t":  645,
+        "w":  1650,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text30"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text30"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text31",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 128) + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 130) + \":\""
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text31L",
+        "source":  "{@lzT_Text31}",
+        "type":  "string",
+        "l":  240,
+        "t":  1650,
+        "w":  9928,
+        "h":  450,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text31"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text31"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text34",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 131)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text34L",
+        "source":  "{@lzT_Text34}",
+        "type":  "string",
+        "l":  270,
+        "t":  2670,
+        "w":  1989,
+        "h":  225,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text34"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text34"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text25",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 97)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text25L",
+        "source":  "{@lzT_Text25}",
+        "type":  "string",
+        "l":  8850,
+        "t":  2670,
+        "w":  1455,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "right",
+        "copyFormatFrom":  "Text25"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text25"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text35",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 148)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text35L",
+        "source":  "{@lzT_Text35}",
+        "type":  "string",
+        "l":  7125,
+        "t":  2670,
+        "w":  1575,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "right",
+        "copyFormatFrom":  "Text35"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text35"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text33",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 133)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text33L",
+        "source":  "{@lzT_Text33}",
+        "type":  "string",
+        "l":  2250,
+        "t":  2670,
+        "w":  1896,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text33"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text33"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text1",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 149)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text1L",
+        "source":  "{@lzT_Text1}",
+        "type":  "string",
+        "l":  5130,
+        "t":  2670,
+        "w":  1981,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "center",
+        "copyFormatFrom":  "Text1"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text1"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text24",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 150)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text24L",
+        "source":  "{@lzT_Text24}",
+        "type":  "string",
+        "l":  7530,
+        "t":  630,
+        "w":  2775,
+        "h":  270,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text24"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text24"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text6",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 138)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupHeaderSection1",
+        "name":  "Text6L",
+        "source":  "{@lzT_Text6}",
+        "type":  "string",
+        "l":  4142,
+        "t":  2655,
+        "w":  1579,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#330035",
+        "align":  "left",
+        "copyFormatFrom":  "Text6"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text6"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text38",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 140)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text38L",
+        "source":  "{@lzT_Text38}",
+        "type":  "string",
+        "l":  4830,
+        "t":  690,
+        "w":  1710,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text38"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text38"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text39",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 141)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text39L",
+        "source":  "{@lzT_Text39}",
+        "type":  "string",
+        "l":  4830,
+        "t":  1050,
+        "w":  1710,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text39"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text39"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text40",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 143)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text40L",
+        "source":  "{@lzT_Text40}",
+        "type":  "string",
+        "l":  4845,
+        "t":  195,
+        "w":  946,
+        "h":  226,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text40"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text40"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text4",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 145)"
+    },
+    {
+        "op":  "field",
+        "section":  "GroupFooterSection3",
+        "name":  "Text4L",
+        "source":  "{@lzT_Text4}",
+        "type":  "string",
+        "l":  1815,
+        "t":  645,
+        "w":  1170,
+        "h":  210,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text4"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text4"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text44",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 151)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text44L",
+        "source":  "{@lzT_Text44}",
+        "type":  "string",
+        "l":  185,
+        "t":  0,
+        "w":  2426,
+        "h":  189,
+        "font":  "Arial",
+        "size":  5.5,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text44"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text44"
+    }
+]

@@ -244,6 +244,92 @@
      tools/crystal-gen/X3RptDiagLogo.cs +
      tools/crystal-gen/Diag-PieceLogoTables.ps1 (diagnóstico read-only).
 
+  j) REDESENHO A4 VERTICAL "ESTILO TEB_REC" + LINHAS DESAGRUPADAS (2026-10-07)
+     Pedido: o PIECE agrupava por conta (ex. ODT-E012607/0002, compensação
+     cliente/fornecedor T002946, tem 108 linhas no GESGAS mas imprimia 2).
+     - CAUSA: o grupo 3 era {GACCENTRYD.ACC_0}; a linha está no cabeçalho
+       desse grupo (mostra só o 1º registo da conta) e os running totals
+       Total_débit/Total_crédito avaliam "on change of group" desse grupo
+       -> os totais também só somavam a 1ª linha de cada conta (imprimia
+       19 600,07 / 38,75 em vez de 65 338,23 / 65 338,23).
+     - FIX: grupo 3 passa a {GACCENTRYD.LIN_0} (1 linha impressa por linha
+       da peça; os running totals ficam corretos sem mais alterações);
+       GroupFooterSection2 (banda vazia por grupo) suprimida. Saldo total =
+       nova fórmula saldoTot = {#Total_débit}-{#Total_crédito} (o RTotal0
+       antigo somava sem condição e duplicaria com linhas analíticas).
+     - LAYOUT (igual ao TEB_REC, área útil L=225..10530):
+       logo "teb + 22 anos" = subreport logoTEB importado de
+       Reports-TEB/logo.rpt (mesmo do TEB_REC: ABLOB CODBLB='LOGO' +
+       IDENT1=empresa, links {@companylogo}/{COMPANY.CPY_0}); bloco
+       Terceiro à direita com morada (tabela NATIVA nova BPADDRESS_BPR,
+       LEFT OUTER de BPARTNER_HDR por BPRNUM_0+BPAADD_0) e NIF; caixa com
+       Diário/Data doc./Data vencim./Estab./Divisa/Categoria/Status +
+       tipo de documento (GTYPACCENT.DES_0) e Nº em destaque; Referência;
+       cabeçalho de colunas Arial 8 negrito cor #330035 com linha por baixo
+       (Conta, Terceiro, Descrição, Estab., Quantid., Débito, Crédito,
+       Saldo); totais com linha por cima; rodapé com info da empresa,
+       linha e "Página N de M". O cabeçalho (área do documento) repete-se
+       em cada página.
+     - Removidos: logos antigos logo1/logoHdr2/logoHdr3 (rodapé/cabeçalho),
+       caixa verde do cabeçalho de colunas, linhas largas de paisagem.
+       Suprimidos: cabeçalho de página (título "Impressão de docum.") e a
+       página de critérios de seleção (Section1, desenhada em paisagem).
+     - Ferramenta: tools/crystal-gen/Edit-X3Report.ps1 + spec
+       tools/crystal-gen/specs/TEB_PIECE_portrait.json (aplicado sobre a
+       versão anterior do TEB_PIECE.rpt). Teste local com dados reais:
+       tools/crystal-gen/Test-PieceExport.ps1 (PDF em
+       Reports-TEB/testes/TEB_PIECE_ODT-E012607-0002.pdf, 3 páginas).
+     - NOTA local: Categoria/Status saem vazios no teste local porque vêm de
+       TextOfChapter (stub fora do print server); no X3 aparecem.
+     - AO PUBLICAR: apagar no print server o TEB_PIECE_CrDll_TEBX3.rpt
+       (cópia em cache do motor) para não servir a versão antiga.
+
+  k) SEM DEPENDÊNCIA DA AREPORTM / ZTRTJOULEG (2026-10-07, versão atual)
+     Teste real no X3 (Job 1344/1349, TJ): o TEB_PIECE.rpt novo chegou ao
+     print server mas saiu SEM DADOS; o ZTRTJOULEG (versão com Infbox de
+     diagnóstico) NUNCA foi chamado e não houve nenhuma linha em AREPORTM.
+     FIX no .rpt (spec tools/crystal-gen/specs/TEB_PIECE_sem_AREPORTM.json):
+     - removida a tabela AREPORTM (só servia de ponte GACCENTRY->GJOURNAL e
+       para filtrar NUMREQ = {?numedt});
+     - novo link nativo GACCENTRY.JOU_0 = GJOURNAL.JOU_0 (JOU_0 é único:
+       65 diários, todos LEG=POR);
+     - record selection igual à anterior SEM a cláusula AREPORTM.NUMREQ_0
+       (mantém sociedade, estab., tipo, nº peça, datas, AFCTFCY e ACCES).
+     Validado localmente com a record selection REAL e numedt=999999
+     (pedido inexistente): 108 linhas, 3 páginas, totais 65 338,23.
+     => O TRTINI do TEB_PIECE (ZTRTJOULEG) deixa de ser necessário; pode
+        ficar em branco em GESARP (o parâmetro numedt continua declarado e
+        é recebido, só não é usado).
+
+  l) AJUSTES (2026-10-07, spec specs/TEB_PIECE_ajustes1.json)
+     - Bloco do terceiro num só campo multi-linha (fórmula hdrTercBloco)
+       que salta linhas de morada vazias (BPAADDLIG_0..2, CP+cidade, NIF).
+     - Título da caixa: texto fixo "Documento" (antes GTYPACCENT.DES_0).
+     - Telefone no rodapé (lbl_companyinfo): TEL_0 da morada do
+       estabelecimento (BPADDRESS_FCY, tipo 3) ou, se vazio, da sociedade
+       (nova tabela nativa BPADDRESS_CPY, LEFT OUTER de COMPANY por
+       CPY_0+BPAADD_0, tipo 2). Só aparece se estiver preenchido.
+     - Record selection: + BPADDRESS_FCY.BPATYP_0 = 3 e BPADDRESS_CPY.
+       BPATYP_0 = 2 (null-safe). A morada E01/E01 existe como tipo 1 E
+       tipo 3 -> sem este filtro cada registo vinha duplicado (não se via
+       nos totais porque os running totals avaliam por linha).
+
+  m) BOTÃO IMPRIMIR DO GESGAS (2026-10-07, validado em produção)
+     - O menu Imprimir do GESGAS vem do objeto GAS (GESAOB: RPT1=PIECE) e
+       dos CÓDIGOS DE IMPRESSÃO (GESARX, tabela AREPORTX). Criado em GESARX
+       o código interno "PIECE" (não existia; o campo é texto livre) com as
+       listas PIECE e TEB_PIECE -> ambas aparecem no botão. Sem tocar no
+       objeto standard.
+     - Por este caminho o X3 só envia os parâmetros do AREPORTV (GESGAS);
+       faltavam "numedt" (antes posto pelo RPTLEG/$TRTJOU) e "typpcefin"
+       -> ERR 504 "Valores de parâmetro ausentes". Corrigido no
+       ZTRTJOULEG.IMPRIME (SETPARAM numedt = __REQUETE; typpcedeb=""/
+       typpcefin="zzzzzzzzzz" quando faltam). Tem um diagnóstico opcional
+       (ZDBGPAR=1) que lista parâmetros em falta.
+     - O ZTRTJOULEG CONTINUA NECESSÁRIO (TRTINI do TEB_PIECE em GESARP).
+     - Nome do ficheiro na pré-visualização web: NÃO configurável (fica o
+       código do relatório; o _ExportFile só serve destinos ficheiro/email).
+
 ------------------------------------------------------------------------
 3. REGISTO NO DICIONÁRIO X3 (feito, exceto o passo 4 — ver abaixo)
 ------------------------------------------------------------------------
@@ -352,12 +438,18 @@
     3. [FEITO] Reports-TEB/TEB_PIECE.rpt copiado para a pasta de
        relatórios do print server.
 
-    4. [FEITO] GESASU: subprograma "ZTRTJOULEG" criado, TRTINI_0 do
-       TEB_PIECE apontado para ele (em vez de TRTJOULEG).
+    4. [FEITO] AREPORT.TRTINI_0 do TEB_PIECE = ZTRTJOULEG (confirmado por
+       SQL 2026-10-07). [POR FAZER — o utilizador confirmou a 2026-10-07
+       que o script ZTRTJOULEG NUNCA foi criado no X3; a nota anterior
+       "feito" estava errada] criar o script ZTRTJOULEG com
+       Reports-TEB/ZTRTJOULEG.src e compilar.
 
-    5. [POR FAZER] Atualizar o "ZTRTJOULEG" em GESASU com a versão FIX v2
-       deste ficheiro (o truque "ETAT='PIECE'" antes do Gosub) e testar
-       de novo via AIMP com o mesmo documento (ODT-E012607/0002).
+    5. REVISÃO 2026-10-07: o truque "ETAT='PIECE'" do FIX v2 foi RETIRADO.
+       Confirmado por SQL que o AREPORTD do TEB_PIECE é idêntico ao do
+       PIECE (12 parâmetros, sem joudeb/joufin), logo o $TRTJOU do RPTLEG
+       cai no mesmo ramo "Default" para os dois códigos — o "0 linhas em
+       AREPORTM" observado antes foi porque o script não existia, não por
+       causa do RPTLEG. O .src é agora uma cópia fiel do ramo PIECE.
 
     6. Confirmar:
        - aparece 1 linha nova em AREPORTM — mas atenção: fica com

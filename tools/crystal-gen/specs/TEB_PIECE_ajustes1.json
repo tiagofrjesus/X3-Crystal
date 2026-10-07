@@ -1,0 +1,19 @@
+[
+  {"comment": "Ajustes pos-teste em producao (2026-10-07): (1) bloco do terceiro num so campo multi-linha que salta linhas de morada vazias (antes ficava um buraco quando BPAADDLIG_1 era vazio); (2) titulo da caixa fixo 'Documento' em vez da descricao do tipo (GTYPACCENT.DES_0)."},
+
+  {"op": "formula", "name": "hdrTercBloco", "text": "local stringVar s := \"\";\nlocal stringVar l;\nif not IsNull({BPADDRESS_BPR.BPAADDLIG_0}) then (l := Trim({BPADDRESS_BPR.BPAADDLIG_0}); if l <> \"\" then s := l);\nif not IsNull({BPADDRESS_BPR.BPAADDLIG_1}) then (l := Trim({BPADDRESS_BPR.BPAADDLIG_1}); if l <> \"\" then s := s + (if s <> \"\" then Chr(13) else \"\") + l);\nif not IsNull({BPADDRESS_BPR.BPAADDLIG_2}) then (l := Trim({BPADDRESS_BPR.BPAADDLIG_2}); if l <> \"\" then s := s + (if s <> \"\" then Chr(13) else \"\") + l);\nif not IsNull({BPADDRESS_BPR.POSCOD_0}) then (l := Trim({@hdrTercCidade}); if l <> \"\" then s := s + (if s <> \"\" then Chr(13) else \"\") + l);\nl := Trim({@hdrTerceiroNif});\nif l <> \"\" then s := s + (if s <> \"\" then Chr(13) else \"\") + l;\ns"},
+  {"op": "remove", "name": "hdrTercMor0"},
+  {"op": "remove", "name": "hdrTercMor1"},
+  {"op": "remove", "name": "hdrTercCid"},
+  {"op": "remove", "name": "hdrTerceiroNifF"},
+  {"op": "field", "section": "Section13", "name": "hdrTercBlocoF", "source": "{@hdrTercBloco}", "l": 6255, "t": 1185, "w": 4275, "h": 1060, "font": "Arial", "size": 8},
+
+  {"op": "remove", "name": "hTypDes"},
+  {"op": "label", "section": "Section13", "name": "hDoc", "text": "Documento", "l": 8350, "t": 2375, "w": 2100, "h": 225, "font": "Arial", "size": 8, "bold": true, "align": "center"},
+
+  {"comment": "(3) Telefone da TEB no rodape: morada do estabelecimento (BPADDRESS tipo 3) ou, se vazio, da sociedade (GESCPY, tipo 2, nova tabela BPADDRESS_CPY); so aparece se estiver preenchido. (4) BPADDRESS_FCY tinha 2 linhas por estabelecimento (BPATYP 1 e 3) -> fixado o tipo 3 na record selection (como no TEB_REC), evita registos duplicados."},
+  {"op": "addTable", "table": "BPADDRESS", "alias": "BPADDRESS_CPY", "schema": "TEB", "dsn": "TEST_TEB211", "db": "tebx3",
+   "user": "sa", "pass": "env:X3_DB_PASS", "from": "COMPANY", "fromFields": ["CPY_0", "BPAADD_0"], "toFields": ["BPANUM_0", "BPAADD_0"], "join": "leftouter"},
+  {"op": "formula", "name": "lbl_companyinfo", "text": "WhilePrintingRecords;\nlocal stringVar txt;\nlocal stringVar tel := \"\";\nif not IsNull({BPADDRESS_FCY.TEL_0}) then tel := Trim({BPADDRESS_FCY.TEL_0});\nif tel = \"\" and not IsNull({BPADDRESS_CPY.TEL_0}) then tel := Trim({BPADDRESS_CPY.TEL_0});\ntxt := {COMPANY.CPYNAM_0} + \" - \" + {BPADDRESS_FCY.BPAADDLIG_0} + \" - \" + {BPADDRESS_FCY.POSCOD_0} + \"-\" + {BPADDRESS_FCY.CTY_0} + \" - \" + {COMPANY.NID_0};\nif tel <> \"\" then txt := txt + \" - Tel. \" + tel;\ntxt"},
+  {"op": "selection", "text": "{GACCENTRY.FCY_0} in {?sitedeb} to {?sitefin} and {GACCENTRY.CPY_0} = {?societe} and {GACCENTRY.TYP_0} in {?typpcedeb} to {?typpcefin} and {GACCENTRY.NUM_0} in {?pcedeb} to {?pcefin} and {GACCENTRY.ACCDAT_0} in {?datedeb} to {?datefin} and {AFCTFCY.FNC_0} = {?X3FCT} and {AFCTFCY.PRFCOD_0} = {?X3PRF} and {ACCES.USR_0} = {?X3USR} and {ACCES.CONSUL_0} = 2 and ({GACCENTRYD.LEDTYP_0} = {?referentiel} or {?touref}) and (IsNull({BPADDRESS_FCY.BPATYP_0}) or {BPADDRESS_FCY.BPATYP_0} = 3) and (IsNull({BPADDRESS_CPY.BPATYP_0}) or {BPADDRESS_CPY.BPATYP_0} = 2)"}
+]

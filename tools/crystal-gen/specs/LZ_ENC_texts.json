@@ -1,0 +1,404 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text15",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 92) + \" \" + {SORDER.CREUSR_0}"
+    },
+    {
+        "op":  "field",
+        "section":  "Section13",
+        "name":  "Text15L",
+        "source":  "{@lzT_Text15}",
+        "type":  "string",
+        "l":  8775,
+        "t":  2535,
+        "w":  2040,
+        "h":  240,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "right",
+        "copyFormatFrom":  "Text15"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text15"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text16",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 102) + \": \" + {BPARTNER.EECNUM_0}"
+    },
+    {
+        "op":  "field",
+        "section":  "Section13",
+        "name":  "Text16L",
+        "source":  "{@lzT_Text16}",
+        "type":  "string",
+        "l":  5370,
+        "t":  2160,
+        "w":  2250,
+        "h":  240,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text16"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text16"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text19",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 103)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text19L",
+        "source":  "{@lzT_Text19}",
+        "type":  "string",
+        "l":  5475,
+        "t":  195,
+        "w":  5114,
+        "h":  226,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text19"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text19"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text22",
+        "text":  "\"_____/_____/_____\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 106)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text22L",
+        "source":  "{@lzT_Text22}",
+        "type":  "string",
+        "l":  5460,
+        "t":  480,
+        "w":  1879,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text22"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text22"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text37",
+        "text":  "\"_____________________________\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 107)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text37L",
+        "source":  "{@lzT_Text37}",
+        "type":  "string",
+        "l":  7275,
+        "t":  480,
+        "w":  3090,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text37"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text37"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text55",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 104)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text55L",
+        "source":  "{@lzT_Text55}",
+        "type":  "string",
+        "l":  5475,
+        "t":  1065,
+        "w":  5114,
+        "h":  226,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text55"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text55"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text56",
+        "text":  "\"_____/_____/_____\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 106)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text56L",
+        "source":  "{@lzT_Text56}",
+        "type":  "string",
+        "l":  5460,
+        "t":  1350,
+        "w":  1879,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text56"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text56"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text57",
+        "text":  "\"_____________________________\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 107)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text57L",
+        "source":  "{@lzT_Text57}",
+        "type":  "string",
+        "l":  7275,
+        "t":  1350,
+        "w":  3090,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text57"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text57"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text23",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 104)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text23L",
+        "source":  "{@lzT_Text23}",
+        "type":  "string",
+        "l":  5475,
+        "t":  1920,
+        "w":  5114,
+        "h":  226,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text23"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text23"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text25",
+        "text":  "\"_____/_____/_____\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 106)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text25L",
+        "source":  "{@lzT_Text25}",
+        "type":  "string",
+        "l":  5460,
+        "t":  2205,
+        "w":  1879,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text25"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text25"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text27",
+        "text":  "\"_____________________________\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 108)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text27L",
+        "source":  "{@lzT_Text27}",
+        "type":  "string",
+        "l":  7275,
+        "t":  2205,
+        "w":  3090,
+        "h":  420,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text27"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text27"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text28",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 109)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text28L",
+        "source":  "{@lzT_Text28}",
+        "type":  "string",
+        "l":  405,
+        "t":  210,
+        "w":  1080,
+        "h":  225,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text28"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text28"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text29",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 112)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text29L",
+        "source":  "{@lzT_Text29}",
+        "type":  "string",
+        "l":  405,
+        "t":  960,
+        "w":  1095,
+        "h":  255,
+        "font":  "Arial",
+        "size":  9,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text29"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text29"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text18",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 115) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 166) + Chr(13) + \"\" + Chr(13) + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 116)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection12",
+        "name":  "Text18L",
+        "source":  "{@lzT_Text18}",
+        "type":  "string",
+        "l":  1155,
+        "t":  645,
+        "w":  8505,
+        "h":  750,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text18"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text18"
+    },
+    {
+        "op":  "formulaReplace",
+        "mainOnly":  true,
+        "required":  true,
+        "find":  "\" - Mat\\. Cons\\. Comercial: Nr\\. \"",
+        "replace":  "\" - \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 164) + \" \""
+    }
+]

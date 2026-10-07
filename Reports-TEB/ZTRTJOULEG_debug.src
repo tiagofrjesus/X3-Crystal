@@ -1,0 +1,36 @@
+#<AdxTL>
+###########################################################################################################
+# ZTRTJOULEG - VERSAO DE DIAGNOSTICO 3 (temporaria).
+# Ronda 2 mostrou a sequencia de acoes: OUVRE, CONTPRT, CONT1/CONT2, CONTSAI, FINAIMP1, EXEC,
+# Subprog IMPRIME (NBPAR=50), AP_IMPRIME, FIN.
+# Ronda 3: mostrar os 50 parametros que chegam ao IMPRIME (destino, _ExportFile, ...) para decidir como
+# por o numero do documento no nome do ficheiro. Sem Infbox nas acoes (ja sabemos quais sao).
+###########################################################################################################
+
+$ACTION
+Case ACTION
+ When "CONT1"
+  If [M]ETAT="TEB_PIECE" & [M]OBJET(nolign-1)="GTE"
+   [M]DEBFIN(nolign-1)=4
+  Endif
+ When "INIPAR2"
+  If [M]ETAT="TEB_PIECE" & [M]OBJET(nolign-1)="GTE"
+   [M]DEBFIN(nolign-1)=1 : mkstat=1
+  Endif
+Endcase
+Return
+
+Subprog IMPRIME(NBPAR,PARAMETRE)
+Variable Integer NBPAR
+Variable Char    PARAMETRE()(1..)
+Local Integer DBGI, DBGJ                                                          # DBG
+Local Clbfile DBGTXT                                                              # DBG
+# 5 janelas com 10 parametros cada (chr$(1) aparece como "~")                     # DBG
+For DBGJ = 0 To NBPAR-1 Step 10                                                   # DBG
+ DBGTXT = "PARAMETROS " + num$(DBGJ+1) + "-" + num$(min(DBGJ+10,NBPAR)) + " de " + num$(NBPAR)  # DBG
+ For DBGI = DBGJ+1 To min(DBGJ+10,NBPAR)                                          # DBG
+  DBGTXT += chr$(10) + num$(DBGI) + ": " + ctrans(PARAMETRE(DBGI), chr$(1)+chr$(2), "~~")  # DBG
+ Next DBGI                                                                        # DBG
+ Infbox DBGTXT                                                                    # DBG
+Next DBGJ                                                                         # DBG
+End

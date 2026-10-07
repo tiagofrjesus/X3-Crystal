@@ -1,0 +1,22 @@
+﻿[
+    {
+        "comment":  "Port TEB_GT -\u003e Lisoaz: ZDESCL_0 -\u003e ITMDES_0."
+    },
+    {
+        "name":  "ZDESCL01",
+        "op":  "remove"
+    },
+    {
+        "source":  "{TRANNOTED.ITMDES_0}",
+        "type":  "string",
+        "section":  "DetailSection1",
+        "w":  5670,
+        "t":  45,
+        "l":  1740,
+        "name":  "ITMDESLZ01",
+        "h":  221,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    }
+]

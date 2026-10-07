@@ -1,0 +1,100 @@
+﻿[
+    {
+        "comment":  "Port TEB_FAC -\u003e Lisoaz: ZDESCL_0 -\u003e ITMDES_0; vista custom ZFTR (recibo que liquida a FR) removida."
+    },
+    {
+        "name":  "ZDESCL01",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SINVOICED.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section18",
+        "w":  4035,
+        "t":  0,
+        "l":  1260,
+        "name":  "ITMDESLZ01",
+        "h":  225,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "ZDESCL02",
+        "op":  "remove"
+    },
+    {
+        "source":  "{SINVOICED.ITMDES_0}",
+        "type":  "string",
+        "section":  "Section20",
+        "w":  4035,
+        "t":  0,
+        "l":  1245,
+        "name":  "ITMDESLZ02",
+        "h":  225,
+        "size":  8,
+        "font":  "Arial",
+        "op":  "field"
+    },
+    {
+        "name":  "FTR1",
+        "op":  "remove"
+    },
+    {
+        "op":  "formula",
+        "name":  "FTR",
+        "text":  "\"\""
+    },
+    {
+        "op":  "removeTable",
+        "alias":  "ZFTR"
+    },
+    {
+        "comment":  "Formulas mortas (nao usadas) do TEB_FAC que referenciam campos inexistentes (alias SORDERQ-\u003eSINVOICED, SINVOICEV.DTAVAT*) -\u003e neutralizadas, senao o motor falha com Nome de campo invalido."
+    },
+    {
+        "op":  "formula",
+        "name":  "qt_rest_liv",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "tax_0",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "tax_1",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "tax_2",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "Mt_sfoot0",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "Mt_sfoot1",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "Mt_sfoot2",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "Mt_sfoot3",
+        "text":  "0"
+    },
+    {
+        "op":  "formula",
+        "name":  "Mt_sfoot4",
+        "text":  "0"
+    }
+]

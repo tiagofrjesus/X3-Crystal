@@ -1,0 +1,117 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZTexts.ps1 -- textos fixos -\u003e menu local 6003 (TextOfChapter, idioma {@lzLan}). Nao editar a mao."
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text41",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 110)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection3",
+        "name":  "Text41L",
+        "source":  "{@lzT_Text41}",
+        "type":  "string",
+        "l":  135,
+        "t":  90,
+        "w":  1530,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text41"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text41"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text44",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 113)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection3",
+        "name":  "Text44L",
+        "source":  "{@lzT_Text44}",
+        "type":  "string",
+        "l":  135,
+        "t":  345,
+        "w":  930,
+        "h":  225,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text44"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text44"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text45",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 112)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection3",
+        "name":  "Text45L",
+        "source":  "{@lzT_Text45}",
+        "type":  "string",
+        "l":  135,
+        "t":  600,
+        "w":  945,
+        "h":  255,
+        "font":  "Arial",
+        "size":  8,
+        "bold":  true,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "left",
+        "copyFormatFrom":  "Text45"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text45"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzT_Text40",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 115) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 166)"
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection1",
+        "name":  "Text40L",
+        "source":  "{@lzT_Text40}",
+        "type":  "string",
+        "l":  1200,
+        "t":  705,
+        "w":  8505,
+        "h":  435,
+        "font":  "Arial",
+        "size":  7,
+        "bold":  false,
+        "italic":  false,
+        "underline":  false,
+        "color":  "#000000",
+        "align":  "center",
+        "copyFormatFrom":  "Text40"
+    },
+    {
+        "op":  "remove",
+        "name":  "Text40"
+    }
+]

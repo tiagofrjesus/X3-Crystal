@@ -802,6 +802,33 @@ foreach (var mm in typeof(Interface).GetMethods()) {
 
 ---
 
+## Editor genérico guiado por JSON (2026-10-07) — usar ANTES de escrever um .cs novo
+
+`Edit-X3Report.ps1 -Rpt <in> -Ops <spec.json> -Out <out>` (motor `X3RptEdit.cs`; relança-se sozinho em
+32-bit; se uma operação falhar não grava nada). Operações: `remove`, `set` (posição/fonte/cor/alinhamento/
+borda via Clone+Modify), `label`, `field`, `box`, `formula`, `sectionHeight`, `suppress`, `group`,
+`addTable` (nativa, credenciais limpas; password via `"pass": "env:X3_DB_PASS"`), `importSubreport`
+(+links+filtro), `selection`. Exemplo completo: `specs/TEB_PIECE_portrait.json`.
+Teste visual: `Test-PieceExport.ps1` (ou `Test-RecExport.ps1`) → PDF → `Pdf-ToPng.ps1` → ver PNG.
+Dump de grupos/running totals/estilo (fontes, cores, bordas): `Dump-Style.ps1`.
+
+Lições novas descobertas ao construí-lo:
+- **Objeto acabado de criar tem `FontColor` nulo** → criar `FontColorClass`+`FontClass` novos em vez de
+  `Clone` (senão "Object reference not set").
+- **Caixa/linha com fórmula `''` NÃO desenha a borda no export** (o render visual confirmou: nem a
+  `hdrMetaBox` antiga aparecia). Usar `ChrW(160)` (espaço não-quebrável) como valor da fórmula.
+- **Importar um subreport que JÁ traz parâmetros `Pm-*`** (ex. `Reports-TEB/logo.rpt`) e ligá-lo
+  (por `SetSubreportLinks` OU Clone+Modify do objeto de colocação) faz o RAS criar `Pm-X??01` ao gravar e
+  deixar os `Pm-X` antigos órfãos → "Valores de parâmetro ausentes". Fix: importar uma cópia
+  "carrier" sem `Pm-*` e sem record selection (o editor faz isto automaticamente quando há `links`).
+- O `logo.rpt` standalone tem secções de cabeçalho/rodapé de 600 twips não suprimidas → o logo desce e o
+  subreport cresce; no carrier suprimir tudo exceto Detail, e tirar a moldura do objeto de colocação.
+- **Agrupar por conta "esconde" linhas**: no PIECE a linha está no cabeçalho do grupo `ACC_0` e os
+  running totals avaliam na mudança desse grupo — trocar o grupo para `LIN_0` desagrupa e corrige os
+  totais de uma vez.
+- A área de grupo do documento do PIECE já tem "repetir cabeçalho em cada página"; o `GroupHeaderSection1`
+  (referencial) tem supressão condicional — não pôr lá objetos.
+
 ## Segurança / âmbito
 
 - Nunca tocar em `Reports-BaseX3/` (referência standard) nem em `Reports-TEB/PIECE.rpt` (standard
@@ -809,3 +836,61 @@ foreach (var mm in typeof(Interface).GetMethods()) {
 - Trabalhar sempre numa cópia de teste primeiro (pasta scratch), validar, só depois copiar para o
   ficheiro final em `Reports-TEB/`.
 - Nunca commitar/fazer push sem pedido explícito do utilizador.
+
+## TEB_REC (2026-10-07): regressão + fix definitivo do "Valor Pendente"
+
+**Regressão**: o `.rpt` em produção (editado a 24-09 para acrescentar `TABPAYTYP`/`BANK`) partiu de uma
+versão ANTERIOR ao fix de julho — voltou a `valorpend = valorDoc - Sum(PAYMENTD.AMTLIN_0)` (só este
+recibo). Caso: FTC-E0126/013084 (73,80), recibo anterior 60,00 + recibo RTRF-26E01/03938 13,80 →
+imprimia pendente 60,00. **Antes de editar um .rpt, partir SEMPRE da última versão em
+`Reports-TEB/` e comparar com o que está em produção.**
+
+**O fix de julho (acumulado dos recibos ANTERIORES, `NUM_0 <=`) também estava errado**, por 3 motivos
+confirmados com dados reais:
+1. `NUM_0` comparado como texto não é cronológico entre tipos (`RPMB-…` vs `RTRF-…`).
+2. O self-join multiplica linhas: recibo com 2 linhas p/ a mesma fatura+vencimento (RECEB+DFINA, ~600
+   casos) contava o histórico 2x; descontos/retenções/`total` também multiplicavam.
+3. **As conciliações parciais redistribuem o pendente entre faturas SEM linhas PAYMENTD** (RTRF-26E01/
+   03869: FTC-013077 dava pendente −653,83 e FTC-013107 ficava com 653,83 que o X3 tem como pago).
+   Somar recibos ≠ `GACCDUDATE.PAYCUR_0`.
+
+**Fix (`X3RptRecPendFix.cs` / `Fix-RecPendHist.ps1`)** — só tabela nativa ODBC + link nativo + fórmulas:
+- `PAYMENTD_CUM` (LeftOuter VCRNUM_0+DUDNUM_0), seleção: própria linha do recibo **ou
+  `CREDATTIM_0 >` (recibos POSTERIORES)** — na impressão normal não há nenhum, o join não acrescenta linhas.
+- `pago à data = GACCDUDATE.PAYCUR_0 − Sum(@amtLinLater)/Sum(@selfRow)` (mín. 0); `valorpend = valorDoc − isso`.
+- `@selfRow` (=1 só na combinação linha↔ela própria) protege `valorLiq` (Valor Pago), `descontos`,
+  `withholdingTax`, `total`.
+
+**Teste end-to-end com dados REAIS do relatório COMPLETO** (novo, muito melhor que testes isolados):
+`Test-RecExport.ps1` = `X3RptStubUfl.cs` (cópia de teste com `TextOfChapter`/`AmountToWord` em stub —
+fora do print server os UFLs dão "Local menus file not found") + `X3RptExportFull.cs` (remapeia todas as
+tabelas p/ DSN `TEST_TEB211`, `Location = TEB.<tabela>`, e usa um pedido de impressão que já existe em
+`TEB.AREPORTM` — as linhas ficam lá depois de cada impressão: `usr`/`numedt`/`seqedt=0`).
+Validado em 5 recibos (03938, 09830, 03869, 03889, reimpressão 03939) = valores esperados por SQL.
+
+---
+
+## Lisoaz (2026-10-07) — port TEB -> outro cliente, design uniforme, POR/ENG
+
+Pipeline: `Build-Lisoaz.ps1` encadeia specs `LZ_<doc>_port.json` > `LZ_common.json` > `LZ_<doc>_texts.json` > `LZ_<doc>_design.json`
+(gerados por `Gen-LZTexts.ps1` / `Gen-LZDesign.ps1`). Validar com `Validate-LZ.ps1` + `Audit-Certification.ps1`; testar com
+`Test-AllLZ.ps1 -Lan POR|ENG` (dados reais TEB via AREPORTM).
+
+- **Campos certificados (PT_MENTION*, PT*, ATCUD, QR) e as SECCOES onde estao: nao mexer em nada** (posicao, fonte, visibilidade,
+  condicoes, altura). O editor recusa `set`/`remove` em PT* (salvo `force`) e `formulaReplace` salta formulas PT_*/isPt*/atcud*.
+  `Validate-LZ.ps1` compara `Dump-SectionFormulas.ps1 -Cert` (TEB vs LZ).
+- **Faixas de fundo** (`box` com `back:true` = indice 0 na seccao) ficam por baixo dos textos. Caixas-campo vazias precisam de
+  fonte minima (o editor poe size 1): com Arial 10 por omissao o RAS estica-as e a SECCAO cresce (nunca encolhe -> "Altura de seccao invalida").
+  Uma caixa com contorno tambem pode fazer crescer a seccao alguns twips: dar folga.
+- `field` nasce com Arial 10 e o RAS estica a altura; o editor repoe a geometria num 2.o Modify depois de aplicar a fonte.
+- Converter Text fixo -> campo formula: usar `copyFormatFrom` (herda supressao condicional do Text; sem isso aparecem rotulos que deviam
+  estar ocultos, ex. "Total de retencoes"). TextObject: ler paragrafos/elementos (`X3RptTexts.cs`); ha textos multi-linha.
+- Subreports: ops com `"sub": "<nome>"` (formula/field/remove). O subreport nao ve formulas do principal: publicar pasta/idioma em
+  shared vars (`lzDos`/`lzLanS`) numa formula do principal ja avaliada no cabecalho (`textofchapter`).
+- Menus locais: `TextOfChapter` aparece tambem como `TextofChapter` (case-insensitive) e com numero dinamico; fórmulas comentadas
+  (`//`) contem nomes de UFL. Literais tambem entre plicas ('Taxa') nos subreports.
+- Export local: subreports SEM tabelas (so texto, ex. Notacredit) dao "Erro no arquivo" sem detalhe -> suprimidos no teste;
+  formulas mortas que referenciam campos inexistentes (alias trocado) dao "Nome de campo invalido" mesmo nao usadas -> neutralizar.
+- PowerShell 5.1: scripts com acentos precisam de BOM; `R` e alias de Invoke-History; `(ConvertFrom-Json)` entre parenteses antes
+  do pipeline; `.values` sem a chave devolve TODOS os valores; `` e `` sao a mesma variavel; arrays aninhados
+  num hashtable literal precisam de `@(,@(...))`.

@@ -1,0 +1,110 @@
+﻿[
+    {
+        "comment":  "GERADO por Gen-LZDesign.ps1 -- nao editar a mao. Design Lisoaz uniforme: azul #1F5FA8, faixas #E7E6E6/#D0CECE; campos certificados PT*/ATCUD/QR intocados."
+    },
+    {
+        "op":  "theme",
+        "map":  {
+                    "#000400":  "#1F5FA8",
+                    "#330035":  "#1F5FA8"
+                },
+        "bold":  true
+    },
+    {
+        "op":  "box",
+        "section":  "Section12",
+        "name":  "lzGridLbl",
+        "l":  255,
+        "t":  450,
+        "w":  7425,
+        "h":  315,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "box",
+        "section":  "Section12",
+        "name":  "lzGridDoc",
+        "l":  7680,
+        "t":  450,
+        "w":  3045,
+        "h":  585,
+        "bg":  "#D0CECE",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "set",
+        "name":  "lblpiece1",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "set",
+        "name":  "typenumpiece1",
+        "bold":  true,
+        "size":  9
+    },
+    {
+        "op":  "set",
+        "name":  "EECNUM01",
+        "bold":  true
+    },
+    {
+        "op":  "set",
+        "name":  "Text1L",
+        "bold":  true,
+        "color":  "#1F5FA8"
+    },
+    {
+        "op":  "box",
+        "section":  "GroupHeaderSection10",
+        "name":  "lzColBar",
+        "l":  60,
+        "t":  45,
+        "w":  10770,
+        "h":  285,
+        "bg":  "#E7E6E6",
+        "back":  true,
+        "border":  "box",
+        "bordercolor":  "#7F7F7F"
+    },
+    {
+        "op":  "box",
+        "section":  "PageFooterSection5",
+        "name":  "lzTotBand",
+        "l":  6990,
+        "t":  225,
+        "w":  3690,
+        "h":  260,
+        "bg":  "#D0CECE",
+        "back":  true,
+        "border":  "none"
+    },
+    {
+        "op":  "formula",
+        "name":  "lzContactos",
+        "text":  "TextOfChapter({?X3DOS}, {@lzLan}, 6003, 165) + \" \" + TextOfChapter({?X3DOS}, {@lzLan}, 6003, 168)"
+    },
+    {
+        "op":  "sectionHeight",
+        "section":  "PageFooterSection7",
+        "h":  965
+    },
+    {
+        "op":  "field",
+        "section":  "PageFooterSection7",
+        "name":  "lzContactosF",
+        "source":  "{@lzContactos}",
+        "type":  "string",
+        "l":  135,
+        "t":  720,
+        "w":  10620,
+        "h":  220,
+        "font":  "Arial",
+        "size":  7,
+        "color":  "#1F5FA8",
+        "align":  "center"
+    }
+]

@@ -1,0 +1,65 @@
+﻿LZ_ORC.rpt — Orçamento de venda (SQH) — Lisoaz
+======================================================================
+Origem: Reports-TEB\TEB_ORC.rpt (TEB, já conforme LEG POR). Modelo certificado Sage de referência: DEVICLIENT2.
+Gerado por: tools\crystal-gen\Build-Lisoaz.ps1 (specs LZ_ORC_port.json > LZ_common.json > LZ_ORC_design.json).
+Campos certificados PT*/ATCUD/QR: inalterados (validado com Validate-LZ.ps1).
+
+REGISTO NO X3 DA LISOAZ (pasta LZPROTO)
+  AREPORT: criar o código LZ_ORC copiando o registo TEB_ORC da TEB (ou do standard DEVICLIENT2), com:
+    Ficheiro Crystal (CRYCOD) = LZ_ORC   <- tem de ser EXATAMENTE o nome do .rpt
+    Descrição TEB: 100100 | Grupo: 12 | Módulo: 5 | Orientação: 1
+    Processo de inicialização (TRTINI) = DEVICLIENT   TRTSPE = ZRPDFPATH
+    NOTA: ZRPDFPATH = processo Megavale de envio direto por email. Manter se o processo for instalado na Lisoaz;
+    enquanto não estiver instalado, deixar TRTSPE vazio (o standard LZPROTO.AREPORT não tem TRTSPE).
+  AREPORTD (parâmetros, iguais aos do .rpt — o .rpt tem os mesmos parâmetros que o TEB):
+     1 sitedeb          21474                      tipo=FCY lg=0.000 def=[ ]..[ ] ctl= 
+     2 clientdeb        21341                      tipo=BPC lg=0.000 def=[ ]..[ ] ctl= 
+     3 typedeb          53637                      tipo=TSQ lg=0.000 def=[ ]..[ ] ctl= 
+     4 devisdeb         21475                      tipo=SQH lg=0.000 def=[ ]..[ ] ctl= 
+     5 datedeb          21333                      tipo=D lg=0.000 def=[date$]..[date$] ctl= 
+     6 datevaldeb       21583                      tipo=D lg=0.000 def=[date$]..[date$] ctl= 
+     7 devdeb           21582                      tipo=CUR lg=0.000 def=[ ]..[ ] ctl= 
+     8 etatdevisdeb     3157                       tipo=M lg=0.000 def=[1]..[3] ctl= 
+     9 codimp           21342                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    10 usr              21456                      tipo=AUS lg=0.000 def=[GUSER]..[ ] ctl= 
+    11 etat             14037                      tipo=A lg=10.000 def=[[F:ARP]RPTCOD]..[ ] ctl= 
+    12 numedt           1143                       tipo=L lg=8.000 def=[ ]..[ ] ctl= 
+    13 euro             21346                      tipo=A lg=3.000 def=[GEURO]..[ ] ctl= 
+    14 codact           23895                      tipo=M lg=0.000 def=[GACTDEB]..[ ] ctl= 
+    15 repdeb           21446                      tipo=REP lg=0.000 def=[ ]..[ZZZZZZZZZZ] ctl= 
+    16 NBMAXTARIF       36858                      tipo=C lg=4.000 def=[func AFNC.ACTIV("SPR")]..[ ] ctl= 
+    17 devttc           25711                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    18 tauxagios        9956                       tipo=RAT lg=0.000 def=[ ]..[ ] ctl= 
+    19 tauxescompte     7411                       tipo=RAT lg=0.000 def=[ ]..[ ] ctl= 
+    20 logosoc          38458                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    21 infosoc          38329                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    22 adrdesgau        38812                      tipo=A lg=30.000 def=["DE,GB,US"]..[ ] ctl= 
+    23 insertcoordexp   38811                      tipo=A lg=30.000 def=["DE"]..[ ] ctl= 
+    24 impselections    21324                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    25 avenantdeb       21340                      tipo=C lg=4.000 def=[[M:SQH0]REVNUM]..[[M:SQH0]REVNUM] ctl= 
+    26 PrintIMG         100101                     tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    27 nIBANs           100097                     tipo=C lg=1.000 def=[7]..[ ] ctl= 
+    28 decimalPunit     100188                     tipo=C lg=4.000 def=[4]..[ ] ctl= 
+  AREPORTV (funções/valores por defeito):
+    GESSQH     clientdeb        [[M:SQH0]BPCORD]..[[M:SQH0]BPCORD]
+    GESSQH     codimp           [[M:SQH1]QUOPRN]..[ ]
+    GESSQH     datedeb          [[M:SQH0]QUODAT]..[[M:SQH0]QUODAT]
+    GESSQH     datevaldeb       [[M:SQH1]VLYDAT]..[[M:SQH1]VLYDAT]
+    GESSQH     devdeb           [[M:SQH0]CUR]..[[M:SQH0]CUR]
+    GESSQH     devisdeb         [[M:SQH0]SQHNUM]..[[M:SQH0]SQHNUM]
+    GESSQH     etatdevisdeb     [[M:SQH1]QUOSTA]..[[M:SQH1]QUOSTA]
+    GESSQH     sitedeb          [[M:SQH0]SALFCY]..[[M:SQH0]SALFCY]
+    GESSQH     typedeb          [[M:SQH0]SQHTYP]..[[M:SQH0]SQHTYP]
+  Associar o código LZ_ORC ao(s) botão(ões)/destino de impressão do documento (GESARX/GESADI), como na TEB.
+
+DIFERENÇAS FACE AO TEB_ORC
+  - ZDESCL_0 (descrição longa custom TEB) -> ITMDES_0 standard (ITMDESLZ01/02)
+  - Textos fixos (PT) passados para o menu local 6003 (TextOfChapter, POR/ENG). Criar as entradas no X3: Lisoaz\Menus_locais_LZ.xlsx
+    (enquanto não existirem, esses rótulos saem em branco).
+  - Idioma do documento = idioma do terceiro (BPARTNER.LAN_0): POR -> português, outro -> ENG (fórmula lzLan).
+  - Design Lisoaz: azul #1F5FA8 nos rótulos de colunas/tipo de documento; faixas cinza na grelha, barra de colunas e total; rodapé de contactos Lisoaz (fórmula lzContactos, texto no menu 6003).
+
+TABELAS X3 USADAS (principal)
+  SQUOTE, SQUOTED, FACILITY, BPARTNER, ITMSALES, AREPORTM, TABUNIT, TABCUR, BPADDRESS (BPADDRESS_FCY), BPADDRESS (BPADDRESS_BPR), TEXCLOB (TEXCLOB_DEB), TEXCLOB (TEXCLOB_FIN), TEXCLOB (TEXCLOB_DET), COMPANY, PRICSTRUCT, TABLAN (TABLAN_SQH), AFCTFCY, TMPSRPT, PORQRC, AUTILIS, SALESREP
+
+LOGÓTIPO: subreport de logo lê ABLOB (CODBLB = 'LOGO', IDENT1 = sociedade). Na Lisoaz carregar o logo na sociedade LZACM (ainda não existe em LZPROTO.ABLOB).

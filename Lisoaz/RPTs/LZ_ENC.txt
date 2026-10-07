@@ -1,0 +1,55 @@
+﻿LZ_ENC.rpt — Encomenda de venda / aviso de receção (SOH) — Lisoaz
+======================================================================
+Origem: Reports-TEB\TEB_ENC.rpt (TEB, já conforme LEG POR). Modelo certificado Sage de referência: ARCCLIENT2.
+Gerado por: tools\crystal-gen\Build-Lisoaz.ps1 (specs LZ_ENC_port.json > LZ_common.json > LZ_ENC_design.json).
+Campos certificados PT*/ATCUD/QR: inalterados (validado com Validate-LZ.ps1).
+
+REGISTO NO X3 DA LISOAZ (pasta LZPROTO)
+  AREPORT: criar o código LZ_ENC copiando o registo TEB_ENC da TEB (ou do standard ARCCLIENT2), com:
+    Ficheiro Crystal (CRYCOD) = LZ_ENC   <- tem de ser EXATAMENTE o nome do .rpt
+    Descrição TEB: 100055 | Grupo: 12 | Módulo: 5 | Orientação: 1
+    Processo de inicialização (TRTINI) = ARCCLIENT   TRTSPE =  
+  AREPORTD (parâmetros, iguais aos do .rpt — o .rpt tem os mesmos parâmetros que o TEB):
+     1 sitedeb          21338                      tipo=FCY lg=0.000 def=[[M:SOH0]SALFCY]..[[M:SOH0]SALFCY] ctl= 
+     2 commandedeb      21339                      tipo=SOH lg=0.000 def=[[M:SOH0]SOHNUM]..[[M:SOH0]SOHNUM] ctl= 
+     3 avenantdeb       21340                      tipo=C lg=4.000 def=[[M:SOHREV0]REVNUM]..[[M:SOHREV0]REVNUM] ctl= 
+     4 clientdeb        21341                      tipo=BPC lg=0.000 def=[[M:SOH0]BPCORD]..[[M:SOH0]BPCORD] ctl= 
+     5 datedeb          21333                      tipo=D lg=0.000 def=[[M:SOH0]ORDDAT]..[[M:SOH0]ORDDAT] ctl= 
+     6 devdeb           21582                      tipo=CUR lg=0.000 def=[[M:SOH0]CUR]..[[M:SOH0]CUR] ctl= 
+     7 typedeb          7637                       tipo=TSO lg=0.000 def=[[M:SOH0]SOHTYP]..[[M:SOH0]SOHTYP] ctl= 
+     8 categcomdeb      49162                      tipo=M lg=0.000 def=[[M:SOH0]SOHCAT]..[[M:SOH0]SOHCAT] ctl= 
+     9 etatcomdeb       32719                      tipo=M lg=0.000 def=[[M:SOH1]ORDSTA]..[[M:SOH1]ORDSTA] ctl= 
+    10 etatfacdeb       32721                      tipo=M lg=0.000 def=[[M:SOH1]INVSTA]..[[M:SOH1]INVSTA] ctl= 
+    11 etatlivdeb       32720                      tipo=M lg=0.000 def=[[M:SOH1]DLVSTA]..[[M:SOH1]DLVSTA] ctl= 
+    12 datelivdeb       26321                      tipo=D lg=0.000 def=[[M:SOH2]DEMDLVDAT]..[[M:SOH2]DEMDLVDAT] ctl= 
+    13 codimp           21342                      tipo=M lg=0.000 def=[[M:SOH1]OCNPRN]..[ ] ctl= 
+    14 usr              21456                      tipo=AUS lg=0.000 def=[GUSER]..[ ] ctl= 
+    15 etat             14037                      tipo=A lg=10.000 def=[[F:ARP]RPTCOD]..[ ] ctl= 
+    16 numedt           1143                       tipo=L lg=8.000 def=[ ]..[ ] ctl= 
+    17 euro             21346                      tipo=A lg=3.000 def=[GEURO]..[ ] ctl= 
+    18 codact           23895                      tipo=M lg=0.000 def=[GACTDEB]..[ ] ctl= 
+    19 NBMAXTARIF       36858                      tipo=C lg=4.000 def=[func AFNC.ACTIV("SPR")]..[ ] ctl= 
+    20 arcttc           25712                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    21 tauxagios        9956                       tipo=RAT lg=0.000 def=[ ]..[ ] ctl= 
+    22 tauxescompte     7411                       tipo=RAT lg=0.000 def=[ ]..[ ] ctl= 
+    23 logosoc          38458                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    24 infosoc          38329                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    25 adrdesgau        38812                      tipo=A lg=30.000 def=["DE,GB,US"]..[ ] ctl= 
+    26 insertcoordexp   38811                      tipo=A lg=30.000 def=["DE"]..[ ] ctl= 
+    27 impselections    21324                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+  AREPORTV (funções/valores por defeito):
+    (sem linhas)
+  Associar o código LZ_ENC ao(s) botão(ões)/destino de impressão do documento (GESARX/GESADI), como na TEB.
+
+DIFERENÇAS FACE AO TEB_ENC
+  - ZDESCL_0 -> ITMDES_0
+  - Matrícula removida (SORDER.LICPLATE_0/TRLLICPLATE_0 não existem na Lisoaz)
+  - Textos fixos (PT) passados para o menu local 6003 (TextOfChapter, POR/ENG). Criar as entradas no X3: Lisoaz\Menus_locais_LZ.xlsx
+    (enquanto não existirem, esses rótulos saem em branco).
+  - Idioma do documento = idioma do terceiro (BPARTNER.LAN_0): POR -> português, outro -> ENG (fórmula lzLan).
+  - Design Lisoaz: azul #1F5FA8 nos rótulos de colunas/tipo de documento; faixas cinza na grelha, barra de colunas e total; rodapé de contactos Lisoaz (fórmula lzContactos, texto no menu 6003).
+
+TABELAS X3 USADAS (principal)
+  SORDER, SORDERP, SORDERQ, FACILITY, BPARTNER, ITMSALES, AREPORTM, TABUNIT, TABCUR, TABMODELIV, BPADDRESS (BPADDRESS_FCY), BPADDRESS (BPADDRESS_BPR), BPADDRESS (BPADDRESS_DLV), BPDLVCUST, TEXCLOB (TEXCLOB_DEB), TEXCLOB (TEXCLOB_FIN), TEXCLOB (TEXCLOB_DET), COMPANY, PRICSTRUCT, TABLAN (TABLAN_SOH), AFCTFCY, TMPSRPT, PORQRC, ITMMASTER
+
+LOGÓTIPO: subreport de logo lê ABLOB (CODBLB = 'LOGO', IDENT1 = sociedade). Na Lisoaz carregar o logo na sociedade LZACM (ainda não existe em LZPROTO.ABLOB).

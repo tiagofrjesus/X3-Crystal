@@ -1,0 +1,772 @@
+﻿[
+    {
+        "num":  59,
+        "por":  "Documento de utilização puramente interna",
+        "eng":  "For internal use only",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  85,
+        "por":  "Desc. Cabeçalho",
+        "eng":  "Header discount",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  86,
+        "por":  "Desconto Linhas",
+        "eng":  "Line discount",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  90,
+        "por":  "Exmo.(s) Senhor(es)",
+        "eng":  "Dear Sir/Madam",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  91,
+        "por":  "V/Número:",
+        "eng":  "Your ref.:",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  92,
+        "por":  "Emitido por:",
+        "eng":  "Issued by:",
+        "origem":  "TEB",
+        "usado":  [
+                      "LZ_ENC.Text15",
+                      "LZ_GT.Text38"
+                  ]
+    },
+    {
+        "num":  93,
+        "por":  "Nº Contribuinte",
+        "eng":  "VAT No.",
+        "origem":  "TEB",
+        "usado":  [
+                      "LZ_GT.Text32"
+                  ]
+    },
+    {
+        "num":  94,
+        "por":  "Modo/Cond. Pagamento",
+        "eng":  "Payment terms",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  95,
+        "por":  "IVA",
+        "eng":  "VAT",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  96,
+        "por":  "Transporte",
+        "eng":  "Transport",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  97,
+        "por":  "Descontos",
+        "eng":  "Discounts",
+        "origem":  "TEB",
+        "usado":  [
+                      "LZ_REC.Text25",
+                      "LZ_PAG.Text25"
+                  ]
+    },
+    {
+        "num":  98,
+        "por":  "Este documento não constitui documento de transporte, nos termos do Decreto-Lei nº 147/2003",
+        "eng":  "This document is not a transport document under Decree-Law no. 147/2003",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  99,
+        "por":  "- Sociedade por quotas - Cons. Reg. Com. de Oliveira de Azeméis, matrícula nº 2272",
+        "eng":  "- Private limited company - Commercial Registry of Oliveira de Azeméis, no. 2272",
+        "origem":  "TEB (texto adaptado à Lisoaz)",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  101,
+        "por":  "Comercial:",
+        "eng":  "Sales rep.:",
+        "origem":  "TEB",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  102,
+        "por":  "NIF",
+        "eng":  "VAT No.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text16"
+                  ]
+    },
+    {
+        "num":  103,
+        "por":  "Declaro que separei os artigos constantes neste documento",
+        "eng":  "I declare that I have picked the items listed in this document",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text19"
+                  ]
+    },
+    {
+        "num":  104,
+        "por":  "Declaro que conferi os artigos constantes neste documento",
+        "eng":  "I declare that I have checked the items listed in this document",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text55",
+                      "LZ_ENC.Text23"
+                  ]
+    },
+    {
+        "num":  105,
+        "por":  "Declaro que recebi e conferi os artigos constantes neste documento",
+        "eng":  "I declare that I have received and checked the items listed in this document",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Text31"
+                  ]
+    },
+    {
+        "num":  106,
+        "por":  "Data",
+        "eng":  "Date",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text22",
+                      "LZ_ENC.Text56",
+                      "LZ_ENC.Text25",
+                      "LZ_FAC.Text35",
+                      "LZ_FAC[Notacredit].Text24",
+                      "LZ_PAG.Text30",
+                      "LZ_GT.Text13"
+                  ]
+    },
+    {
+        "num":  107,
+        "por":  "Assinatura",
+        "eng":  "Signature",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text37",
+                      "LZ_ENC.Text57",
+                      "LZ_FAC.Text36",
+                      "LZ_FAC[Notacredit].Text37"
+                  ]
+    },
+    {
+        "num":  108,
+        "por":  "Assinatura (Motorista)",
+        "eng":  "Signature (Driver)",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text27"
+                  ]
+    },
+    {
+        "num":  109,
+        "por":  "Data Carga",
+        "eng":  "Loading date",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text28",
+                      "LZ_GT.Text7"
+                  ]
+    },
+    {
+        "num":  110,
+        "por":  "Data/Hora Carga",
+        "eng":  "Loading date/time",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GRC.Text41",
+                      "LZ_FAC.Text41"
+                  ]
+    },
+    {
+        "num":  111,
+        "por":  "Hora Carga",
+        "eng":  "Loading time",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GT.Text17"
+                  ]
+    },
+    {
+        "num":  112,
+        "por":  "Descarga",
+        "eng":  "Unloading",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text29",
+                      "LZ_GRC.Text45",
+                      "LZ_FAC.Text45",
+                      "LZ_GT.Text45"
+                  ]
+    },
+    {
+        "num":  113,
+        "por":  "Matrícula",
+        "eng":  "Licence plate",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GRC.Text44",
+                      "LZ_FAC.Text44",
+                      "LZ_GT.Text20"
+                  ]
+    },
+    {
+        "num":  114,
+        "por":  "Matrícula reboque",
+        "eng":  "Trailer plate",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GT.Text21"
+                  ]
+    },
+    {
+        "num":  115,
+        "por":  "Os artigos e/ou serviços constantes deste documento foram colocados à disposição do",
+        "eng":  "The goods and/or services in this document were made available to the buyer on its",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text18",
+                      "LZ_GRC.Text40",
+                      "LZ_FAC.Text40"
+                  ],
+        "cont":  166
+    },
+    {
+        "num":  116,
+        "por":  "«Chamada para rede fixa nacional»",
+        "eng":  "«Call to a national landline»",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.Text18"
+                  ]
+    },
+    {
+        "num":  117,
+        "por":  "Artigo",
+        "eng":  "Item",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Texte34",
+                      "LZ_GT.Text8"
+                  ]
+    },
+    {
+        "num":  118,
+        "por":  "Qtd.",
+        "eng":  "Qty.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Texte35"
+                  ]
+    },
+    {
+        "num":  119,
+        "por":  "Quantidade",
+        "eng":  "Quantity",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GT.Text10"
+                  ]
+    },
+    {
+        "num":  120,
+        "por":  "Preço",
+        "eng":  "Price",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Texte37"
+                  ]
+    },
+    {
+        "num":  121,
+        "por":  "P.U. s/IVA",
+        "eng":  "Unit price excl. VAT",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENF.Text1"
+                  ]
+    },
+    {
+        "num":  122,
+        "por":  "Exped. nr.",
+        "eng":  "Delivery no.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Text5"
+                  ]
+    },
+    {
+        "num":  123,
+        "por":  "Expedida em",
+        "eng":  "Shipped on",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Text9"
+                  ]
+    },
+    {
+        "num":  124,
+        "por":  "Fat. origem",
+        "eng":  "Original invoice",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC.Text1"
+                  ]
+    },
+    {
+        "num":  125,
+        "por":  "Recibo",
+        "eng":  "Receipt",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text1"
+                  ]
+    },
+    {
+        "num":  126,
+        "por":  "Tipo de Pag.",
+        "eng":  "Payment type",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text7"
+                  ]
+    },
+    {
+        "num":  127,
+        "por":  "Banco",
+        "eng":  "Bank",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text11"
+                  ]
+    },
+    {
+        "num":  128,
+        "por":  "Exmos. Senhores,",
+        "eng":  "Dear Sirs,",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text31",
+                      "LZ_PAG.Text31"
+                  ]
+    },
+    {
+        "num":  129,
+        "por":  "Recebemos para liquidação do(s) documento(s) abaixo mencionados no valor de",
+        "eng":  "We have received, in settlement of the document(s) listed below, the amount of",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text31"
+                  ]
+    },
+    {
+        "num":  130,
+        "por":  "Vimos por este meio informar que procedemos à liquidação dos documentos abaixo mencionados",
+        "eng":  "We hereby inform you that we have settled the documents listed below",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text31"
+                  ]
+    },
+    {
+        "num":  131,
+        "por":  "Descrição",
+        "eng":  "Description",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text34",
+                      "LZ_PAG.Text34"
+                  ]
+    },
+    {
+        "num":  132,
+        "por":  "Valor Documento",
+        "eng":  "Document amount",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text35"
+                  ]
+    },
+    {
+        "num":  133,
+        "por":  "Nº do Documento",
+        "eng":  "Document no.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text33",
+                      "LZ_PAG.Text33"
+                  ]
+    },
+    {
+        "num":  134,
+        "por":  "Divisa",
+        "eng":  "Currency",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text8"
+                  ]
+    },
+    {
+        "num":  135,
+        "por":  "Valor Pendente",
+        "eng":  "Outstanding",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text4"
+                  ]
+    },
+    {
+        "num":  136,
+        "por":  "Valor Pago",
+        "eng":  "Amount paid",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text5"
+                  ]
+    },
+    {
+        "num":  137,
+        "por":  "Data do Doc.",
+        "eng":  "Document date",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text6"
+                  ]
+    },
+    {
+        "num":  138,
+        "por":  "Data de Doc.",
+        "eng":  "Document date",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text6"
+                  ]
+    },
+    {
+        "num":  139,
+        "por":  "Total liquidado em",
+        "eng":  "Total settled in",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text37"
+                  ]
+    },
+    {
+        "num":  140,
+        "por":  "Total descontos em",
+        "eng":  "Total discounts in",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text38",
+                      "LZ_PAG.Text38"
+                  ]
+    },
+    {
+        "num":  141,
+        "por":  "Valor recebido em",
+        "eng":  "Amount received in",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text39",
+                      "LZ_PAG.Text39"
+                  ]
+    },
+    {
+        "num":  142,
+        "por":  "Total de retenções em",
+        "eng":  "Total withholdings in",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text9"
+                  ]
+    },
+    {
+        "num":  143,
+        "por":  "TOTAIS",
+        "eng":  "TOTALS",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text40",
+                      "LZ_PAG.Text40"
+                  ]
+    },
+    {
+        "num":  144,
+        "por":  "Para efeitos de IVA, solicitamos a devolução deste(s) documento(s) devidamente assinado",
+        "eng":  "For VAT purposes, please return this document duly signed",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text43"
+                  ]
+    },
+    {
+        "num":  145,
+        "por":  "A Gerência",
+        "eng":  "The Management",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC.Text3",
+                      "LZ_PAG.Text4"
+                  ]
+    },
+    {
+        "num":  146,
+        "por":  "Original",
+        "eng":  "Original",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text3"
+                  ]
+    },
+    {
+        "num":  147,
+        "por":  "Código fornecedor",
+        "eng":  "Supplier code",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text29"
+                  ]
+    },
+    {
+        "num":  148,
+        "por":  "Valor Liquidado",
+        "eng":  "Amount settled",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text35"
+                  ]
+    },
+    {
+        "num":  149,
+        "por":  "Vosso Documento",
+        "eng":  "Your document",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text1"
+                  ]
+    },
+    {
+        "num":  150,
+        "por":  "Notificação de Pagamento",
+        "eng":  "Payment notification",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text24"
+                  ]
+    },
+    {
+        "num":  151,
+        "por":  "Documento processado por computador",
+        "eng":  "Computer-processed document",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_PAG.Text44"
+                  ]
+    },
+    {
+        "num":  152,
+        "por":  "Guia de Transporte",
+        "eng":  "Transport note",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GT.Text24"
+                  ]
+    },
+    {
+        "num":  153,
+        "por":  "Cliente",
+        "eng":  "Customer",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_GT.Text28"
+                  ]
+    },
+    {
+        "num":  154,
+        "por":  "Agradecemos que nos comprovem a recepção da Nota de Crédito através da devolução do respetivo",
+        "eng":  "Please confirm receipt of this Credit Note by returning the duplicate stamped and",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC[Notacredit].Text11"
+                  ],
+        "cont":  167
+    },
+    {
+        "num":  155,
+        "por":  "TOTAL IVA - Valores em EUR",
+        "eng":  "VAT TOTAL - Amounts in EUR",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVA].Text12"
+                  ]
+    },
+    {
+        "num":  156,
+        "por":  "Taxa",
+        "eng":  "Rate",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC[SINVOICEV_TAXE.rpt - 01].@lbl_taux",
+                      "LZ_REC[IVA].Text9",
+                      "LZ_REC[IVAC].Text1"
+                  ]
+    },
+    {
+        "num":  157,
+        "por":  "Base",
+        "eng":  "Base",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVA].Text10"
+                  ]
+    },
+    {
+        "num":  158,
+        "por":  "Mt. taxa",
+        "eng":  "Tax amt.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVA].Text11"
+                  ]
+    },
+    {
+        "num":  159,
+        "por":  "Total (EUR)",
+        "eng":  "Total (EUR)",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVAC].Text5"
+                  ]
+    },
+    {
+        "num":  160,
+        "por":  "Base (EUR)",
+        "eng":  "Base (EUR)",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVAC].Text9"
+                  ]
+    },
+    {
+        "num":  161,
+        "por":  "Mt. taxa (EUR)",
+        "eng":  "Tax amt. (EUR)",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_REC[IVAC].Text10"
+                  ]
+    },
+    {
+        "num":  162,
+        "por":  "Incidência",
+        "eng":  "Taxable amount",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC[SINVOICEV_TAXE.rpt - 01].@lbl_baseTVA"
+                  ]
+    },
+    {
+        "num":  163,
+        "por":  "Imposto",
+        "eng":  "Tax",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_FAC[SINVOICEV_TAXE.rpt - 01].@lbl_mtTVA"
+                  ]
+    },
+    {
+        "num":  164,
+        "por":  "NIPC",
+        "eng":  "Company reg. no.",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ENC.lbl_formejuridique"
+                  ]
+    },
+    {
+        "num":  165,
+        "por":  "Zona Industrial das Lameiradas, Lote Nº 5 • 4540-423 Mansores - Arouca  •  lisoaz@lisoaz.com  •",
+        "eng":  "Zona Industrial das Lameiradas, Lote Nº 5 • 4540-423 Mansores - Arouca  •  lisoaz@lisoaz.com  •",
+        "origem":  "Lisoaz (novo)",
+        "usado":  [
+                      "LZ_ORC.lzContactos",
+                      "LZ_ENC.lzContactos",
+                      "LZ_GRC.lzContactos",
+                      "LZ_FAC.lzContactos",
+                      "LZ_REC.lzContactos",
+                      "LZ_PAG.lzContactos",
+                      "LZ_ENF.lzContactos",
+                      "LZ_GT.lzContactos"
+                  ],
+        "cont":  168
+    },
+    {
+        "num":  166,
+        "por":  "adquirente na mesma, ou na data da Guia Remessa",
+        "eng":  "date or on the date of the delivery note",
+        "origem":  "continuação de 115",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  167,
+        "por":  "duplicado carimbado e assinado, nº 5 do art.º 78º do CIVA",
+        "eng":  "signed (art. 78(5) of the Portuguese VAT Code)",
+        "origem":  "continuação de 154",
+        "usado":  [
+
+                  ]
+    },
+    {
+        "num":  168,
+        "por":  "www.lisoaz.com  •  Tel. (+351) 256 920 030 (chamada para rede fixa nacional)",
+        "eng":  "www.lisoaz.com  •  Tel. (+351) 256 920 030 (call to a national landline)",
+        "origem":  "continuação de 165",
+        "usado":  [
+
+                  ]
+    }
+]

@@ -1,0 +1,68 @@
+﻿LZ_GRC.rpt — Guia de remessa / expedição (SDH) — Lisoaz
+======================================================================
+Origem: Reports-TEB\TEB_GRC.rpt (TEB, já conforme LEG POR). Modelo certificado Sage de referência: BONLIV2.
+Gerado por: tools\crystal-gen\Build-Lisoaz.ps1 (specs LZ_GRC_port.json > LZ_common.json > LZ_GRC_design.json).
+Campos certificados PT*/ATCUD/QR: inalterados (validado com Validate-LZ.ps1).
+
+REGISTO NO X3 DA LISOAZ (pasta LZPROTO)
+  AREPORT: criar o código LZ_GRC copiando o registo TEB_GRC da TEB (ou do standard BONLIV2), com:
+    Ficheiro Crystal (CRYCOD) = LZ_GRC   <- tem de ser EXATAMENTE o nome do .rpt
+    Descrição TEB: 100098 | Grupo: 12 | Módulo: 5 | Orientação: 1
+    Processo de inicialização (TRTINI) = BONLIV   TRTSPE = ZRPDFPATH
+    NOTA: ZRPDFPATH = processo Megavale de envio direto por email. Manter se o processo for instalado na Lisoaz;
+    enquanto não estiver instalado, deixar TRTSPE vazio (o standard LZPROTO.AREPORT não tem TRTSPE).
+  AREPORTD (parâmetros, iguais aos do .rpt — o .rpt tem os mesmos parâmetros que o TEB):
+     1 sitedeb          21338                      tipo=FCY lg=0.000 def=[ ]..[ ] ctl= 
+     2 Livraisondeb     21409                      tipo=SDH lg=0.000 def=[ ]..[ ] ctl= 
+     3 clientdeb        21341                      tipo=BPC lg=0.000 def=[ ]..[ ] ctl= 
+     4 datedeb          21333                      tipo=D lg=0.000 def=[date$]..[date$] ctl= 
+     5 devdeb           21582                      tipo=CUR lg=0.000 def=[ ]..[ ] ctl= 
+     6 typedeb          21670                      tipo=TSD lg=0.000 def=[ ]..[ ] ctl= 
+     7 categlivdeb      49177                      tipo=M lg=0.000 def=[1]..[4] ctl= 
+     8 valdeb           32618                      tipo=M lg=0.000 def=[1]..[2] ctl= 
+     9 facdeb           32723                      tipo=M lg=0.000 def=[1]..[2] ctl= 
+    10 codimp           21342                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    11 usr              21456                      tipo=AUS lg=0.000 def=[GUSER]..[ ] ctl= 
+    12 etat             14037                      tipo=A lg=10.000 def=[[F:ARP]RPTCOD]..[ ] ctl= 
+    13 numedt           1143                       tipo=L lg=8.000 def=[ ]..[ ] ctl= 
+    14 seqedt           1251                       tipo=L lg=8.000 def=[0]..[ ] ctl= 
+    15 euro             21346                      tipo=A lg=3.000 def=[GEURO]..[ ] ctl= 
+    16 traitauto        21410                      tipo=M lg=0.000 def=[0]..[ ] ctl= 
+    17 codact           23895                      tipo=M lg=0.000 def=[GACTDEB]..[ ] ctl= 
+    18 NBMAXTARIF       36858                      tipo=C lg=4.000 def=[func AFNC.ACTIV("SPR")]..[ ] ctl= 
+    19 bonlivttc        37333                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    20 logosoc          38458                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    21 infosoc          38329                      tipo=M lg=0.000 def=[2]..[ ] ctl= 
+    22 adrdesgau        38812                      tipo=A lg=30.000 def=["DE,GB,US"]..[ ] ctl= 
+    23 insertcoordexp   38811                      tipo=A lg=30.000 def=["DE"]..[ ] ctl= 
+    24 impdet           14172                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    25 impselections    21324                      tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    26 fcycpynam        4165                       tipo=M lg=0.000 def=[1]..[ ] ctl= 
+    27 actcdv           1004175                    tipo=C lg=1.000 def=[func AFNC.ACTIV("CDV")]..[ ] ctl= 
+    28 svalores         100099                     tipo=M lg=0.000 def=[1]..[ ] ctl= 
+  AREPORTV (funções/valores por defeito):
+    GESSDH     Livraisondeb     [[M:SDH0]SDHNUM]..[[M:SDH0]SDHNUM]
+    GESSDH     categlivdeb      [[M:SDH0]SDHCAT]..[[M:SDH0]SDHCAT]
+    GESSDH     clientdeb        [[M:SDH0]BPCORD]..[[M:SDH0]BPCORD]
+    GESSDH     codimp           [[M:SDH1]PRNNDE]..[ ]
+    GESSDH     datedeb          [[M:SDH1]SHIDAT]..[[M:SDH1]SHIDAT]
+    GESSDH     devdeb           [[M:SDH1]CUR]..[[M:SDH1]CUR]
+    GESSDH     facdeb           [[M:SDH1]INVFLG]..[[M:SDH1]INVFLG]
+    GESSDH     sitedeb          [[M:SDH0]STOFCY]..[[M:SDH0]STOFCY]
+    GESSDH     svalores         [2]..[ ]
+    GESSDH     typedeb          [[M:SDH0]SDHTYP]..[[M:SDH0]SDHTYP]
+    GESSDH     valdeb           [[M:SDH1]CFMFLG]..[[M:SDH1]CFMFLG]
+  Associar o código LZ_GRC ao(s) botão(ões)/destino de impressão do documento (GESARX/GESADI), como na TEB.
+
+DIFERENÇAS FACE AO TEB_GRC
+  - ZDESCL_0 -> ITMDES_0
+  - Removido "V/Número: SDELIVERY.SDHVREF_0" (campo custom TEB)
+  - Textos fixos (PT) passados para o menu local 6003 (TextOfChapter, POR/ENG). Criar as entradas no X3: Lisoaz\Menus_locais_LZ.xlsx
+    (enquanto não existirem, esses rótulos saem em branco).
+  - Idioma do documento = idioma do terceiro (BPARTNER.LAN_0): POR -> português, outro -> ENG (fórmula lzLan).
+  - Design Lisoaz: azul #1F5FA8 nos rótulos de colunas/tipo de documento; faixas cinza na grelha, barra de colunas e total; rodapé de contactos Lisoaz (fórmula lzContactos, texto no menu 6003).
+
+TABELAS X3 USADAS (principal)
+  FACILITY, BPARTNER, ITMSALES, SDELIVERY, SDELIVERYD, AREPORTM, TABUNIT, TABUNIT (TABUNIT_2), TABMODELIV, TABCUR, BPADDRESS (BPADDRESS_FCY), BPADDRESS (BPADDRESS_DLV), BPDLVCUST, TEXCLOB (TEXCLOB_DEB), TEXCLOB (TEXCLOB_FIN), TEXCLOB (TEXCLOB_DET), COMPANY, PRICSTRUCT, TABLAN (TABLAN_SDY), ITMMASTER, TABUNIT (TABUNIT_3), AFCTFCY, SORDERQ, TMPSRPT, BPADDRESS (BPADDRESS_CPY), TMPSRPTDET, PORQRC, AUTILIS
+
+LOGÓTIPO: subreport de logo lê ABLOB (CODBLB = 'LOGO', IDENT1 = sociedade). Na Lisoaz carregar o logo na sociedade LZACM (ainda não existe em LZPROTO.ABLOB).
