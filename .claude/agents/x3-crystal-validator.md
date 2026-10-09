@@ -42,7 +42,7 @@ valor encontrado. Exemplo:
 ✓ Sobreposições: nenhuma encontrada (verificado GroupHeaderSection3, GroupHeaderSection2, Section13)
 ✓ Largura de página: máximo encontrado 11700/11906 (retrato)
 ✗ Altura de secção: Section13 tem Height=1442 mas o objeto mais baixo (Champ30) termina em T+H=1450 — 8 twips a mais, ajustar
-✓ Credenciais: 0 ocorrências de "sage.2022"
+✓ Credenciais: 0 ocorrências da password do .env
 ✓ Tabelas/fórmulas/links: 12 tabelas (antes: 11, +1 esperado — BPARTNER_HDR), 15 fórmulas (antes: 11, +4 esperado), sem remoções inesperadas
 ```
 

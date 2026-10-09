@@ -32,10 +32,10 @@ repositório (`d:\Git\X3-Crystal`).
 ## Ligação à base de dados
 
 - Servidor `192.168.1.211`, BD `tebx3`, schema/collection `TEB`, user `sa` / password
-  `sage.2022` (ver memória `x3-teb-db-connection` se disponível).
+  no `.env` da raiz do repo (1.º `DB_PASSWORD`, secção TEB; ver memória `x3-teb-db-connection`).
 - DSN ODBC local alcançável para build de tabelas nativas: `TEST_TEB211`.
 - Connection string SQL direta (para consultas de verificação):
-  `Server=192.168.1.211;Database=tebx3;User Id=sa;Password=sage.2022;TrustServerCertificate=True`
+  `Server=192.168.1.211;Database=tebx3;User Id=sa;Password=<DB_PASSWORD do .env>;TrustServerCertificate=True`
 
 ## Fluxo de trabalho
 
@@ -46,7 +46,7 @@ repositório (`d:\Git\X3-Crystal`).
    com tabela nativa + link + fórmula).
 4. Corre sobre uma CÓPIA de teste (nunca diretamente sobre o ficheiro final em `Reports-TEB/`).
 5. Valida com `tools/crystal-gen/Inspect-X3Report.ps1` — confirma que a tabela/link/fórmula
-   aparecem corretamente, e que não há credenciais gravadas (`grep -c "sage.2022" ficheiro.rpt`
+   aparecem corretamente, e que não há credenciais gravadas (`grep -c "<password>" ficheiro.rpt`
    deve dar `0`).
 6. Entrega o resultado (caminho do `.rpt` de teste + resumo do que foi adicionado) para o
    coordenador ou para o próximo especialista (normalmente `x3-crystal-layout`, que vai colocar o

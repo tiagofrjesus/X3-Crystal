@@ -216,7 +216,7 @@ nt.ConnectionInfo = ci;
 RCD.DatabaseController.AddTable(nt, null);
 ```
 - DSN de build alcançável a partir desta máquina de dev: **`TEST_TEB211`** (ODBC, aponta para
-  `192.168.1.211`/`tebx3`, schema `TEB`). Credenciais: `sa` / `sage.2022` (ver memória
+  `192.168.1.211`/`tebx3`, schema `TEB`). Credenciais: `sa` / password no `.env` (ver memória
   `x3-teb-db-connection`).
 - Depois de `AddTable`, **limpar as credenciais** antes de gravar (o print engine do X3 fornece-as
   em runtime — não guardar a password no ficheiro final):
